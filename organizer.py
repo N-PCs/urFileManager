@@ -1,16 +1,32 @@
-import argparse;    # for argument parsing 
-import pathlib;     # for file paths
-import sys;         # for exiting script
-import shutil;      # provides high level file operations like moving files
-import logging;     # for Robust Script Output
-import json;        # for json file 
+# organizer.py
 
-from tqdm import tqdm   # for third party imports
+"""
+Bulk File Organizer
 
-def load_config(config_path: pathlib.Path):
+This script provides a command-line utility to organize files within a specified
+directory into subdirectories based on their file type. It supports a dry-run
+mode for previewing changes, logs all operations to a file, and allows for
+custom organization rules via an external 'config.json' file.
+"""
+
+# Standard library imports
+import argparse
+import json
+import logging
+import pathlib
+import shutil
+import sys
+
+# Third-party imports
+from tqdm import tqdm
+
+def load_config(config_path: pathlib.Path) -> dict:
     """
     Loads and validates the organization rules from a JSON configuration file.
-    Handles potential errors like a missing file or invalid JSON.
+
+    This function attempts to open and parse the specified JSON file. It handles
+    potential FileNotFoundError and json.JSONDecodeError, logging helpful
+    error messages and exiting the script if the configuration is invalid or missing.
 
     Args:
         config_path (pathlib.Path): The path to the config.json file.
@@ -18,169 +34,146 @@ def load_config(config_path: pathlib.Path):
     Returns:
         dict: A dictionary containing the file type mappings.
     """
-    # We wrap the entire file operation in a try...except block to handle potential I/O and parsing errors gracefully.
     try:
-        with open(config_path, 'r') as config_file:
+        with open(config_path, "r") as config_file:
             config_data = json.load(config_file)
             return config_data
-        
-    # This 'except' block handles the case where the config.json file does not exist.
     except FileNotFoundError:
-
-        # We log a critical error message explaining the problem clearly.
         logging.error(f"Configuration file not found at: {config_path}")
-        logging.error("Please make sure 'config.json' exists in the same directory as the script.")
-
-        # We exit the script with a non-zero status code to indicate an error.
+        logging.error(
+            "Please make sure 'config.json' exists in the same directory as the script."
+        )
+        # Exit with a non-zero status code to indicate a fatal error to the OS or calling scripts.
         sys.exit(1)
-
-    # This 'except' block handles errors during the JSON parsing process.
-    # This can happen if the file has a syntax error.
     except json.JSONDecodeError as e:
         logging.error(f"Error parsing configuration file: {config_path}")
-        logging.error(f"The file contains invalid JSON. Please check the syntax. Details: {e}")
+        logging.error(
+            f"The file contains invalid JSON. Please check the syntax. Details: {e}"
+        )
         sys.exit(1)
 
-# Refactor Script Logic into a Main Function
-def organize_directory(source_path: pathlib.Path, dry_run: bool, file_type_map: dict):
+def process_file(
+    file_path: pathlib.Path,
+    source_path: pathlib.Path,
+    file_type_map: dict,
+    dry_run: bool,
+):
     """
-    Scans a directory and organizes files into subdirectories based on their type.
+    Processes a single file: determines its destination and moves it or simulates the move.
 
-    This function is the main workhorse of the script. It will contain the logic
-    for iterating through files, determining their type, creating destination
-    folders, and moving the files.
+    This function is the core worker of the organization process. It finds the
+    appropriate category for the file based on its extension, handles potential
+    filename conflicts by renaming the file if necessary, and performs the
+    actual move operation with error handling.
+
+    Args:
+        file_path (pathlib.Path): The path to the file to be processed.
+        source_path (pathlib.Path): The root directory where organization is happening.
+        file_type_map (dict): The dictionary of organization rules.
+        dry_run (bool): If True, simulate the file move; otherwise, perform it.
+    """
+    # Convert extension to lowercase to ensure case-insensitive matching (e.g., .JPG matches .jpg).
+    file_extension = file_path.suffix.lower()
+
+    destination_folder_name = "Other"
+    for category, extensions in file_type_map.items():
+        if file_extension in extensions:
+            destination_folder_name = category
+            break
+
+    destination_dir = source_path / destination_folder_name
+
+    if dry_run:
+        destination_file_path = destination_dir / file_path.name
+        logging.info(
+            f"[DRY RUN] Would move '{file_path.name}' -> '{destination_file_path}'"
+        )
+    else:
+        # `parents=True` creates any missing parent directories.
+        # `exist_ok=True` prevents an error if the directory already exists.
+        destination_dir.mkdir(parents=True, exist_ok=True)
+
+        destination_file_path = destination_dir / file_path.name
+        counter = 1
+        # This loop handles filename conflicts by appending a counter (e.g., file (1).txt).
+        while destination_file_path.exists():
+            logging.warning(f"Conflict: '{destination_file_path}' already exists.")
+            new_filename = f"{file_path.stem} ({counter}){file_path.suffix}"
+            destination_file_path = destination_dir / new_filename
+            counter += 1
+
+        try:
+            shutil.move(file_path, destination_file_path)
+            logging.info(f"Moved: '{file_path.name}' -> '{destination_file_path}'")
+        except PermissionError as e:
+            logging.error(f"Could not move '{file_path.name}'. Error: {e}")
+        except Exception as e:
+            logging.error(
+                f"An unexpected error occurred while moving '{file_path.name}'. Error: {e}"
+            )
+
+def organize_directory(
+    source_path: pathlib.Path, dry_run: bool, file_type_map: dict
+):
+    """
+    Orchestrates the file organization process for a given directory.
+
+    This function serves as the main entry point for the organization logic.
+    It announces the operational mode (dry run or live), discovers all files
+    in the source directory, and then delegates the processing of each file
+    to the process_file function.
 
     Args:
         source_path (pathlib.Path): The directory to be organized.
         dry_run (bool): If True, simulate without moving files.
         file_type_map (dict): A dictionary mapping folder names to file extensions.
     """
-    # The confirmation print statement is now moved inside our main function.
-    # All future organizing logic will be added here. 
-    # Send First Log Message with logging.info
     logging.info(f"Starting to organize directory: {source_path}")
+    if dry_run:
+        logging.info("--- DRY RUN MODE ENABLED: No files will be moved. ---")
+    else:
+        logging.warning("--- LIVE RUN MODE ENABLED: File system changes will be made. ---")
 
-    # listing the files to be processed
+    # Use a list comprehension for a concise way to gather all files, ignoring subdirectories.
     files_to_process = [item for item in source_path.iterdir() if item.is_file()]
 
+    for file_item in tqdm(files_to_process, desc="Organizing Files"):
+        process_file(file_item, source_path, file_type_map, dry_run)
 
-    # Iterate Over Directory Contents with pathlib
-    for item in tqdm(files_to_process, desc="Organizing Files"):
-        # The `if item.is_file():` check is no longer needed here because our
-        # list comprehension has already pre-filtered for files.
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(
+        description="Organize files in a directory by their type.",
+        epilog="Example: python organizer.py /path/to/downloads",
+    )
+    parser.add_argument(
+        "source_directory", help="The path to the directory you want to organize."
+    )
+    parser.add_argument(
+        "--dry-run",
+        action="store_true",
+        help="Simulate the organization without moving files.",
+    )
+    args = parser.parse_args()
 
-        # ... (the rest of the loop logic remains exactly the same)
-        file_extension = item.suffix
-        
-        destination_folder_name = 'Others'
-        for category, extensions in file_type_map.items():
-            if file_extension in extensions:
-                destination_folder_name = category
-                break
-
-        # Construct the full destination directory path using `source_path / destination_folder_name`.
-        destination_dir = source_path / destination_folder_name
-
-        # Implement Dry-Run Logic in a Python File Organizer
-        if dry_run:
-            # simulate the conflict resolution logic (e.g., adding '(1)').
-            destination_file_path = destination_dir / item.name
-
-            # logging the action to INFO level
-            logging.info(f"[DRY RUN] Would move '{item.name}' -> '{destination_file_path}'")
-
-            # confirming if dry run is active
-            logging.info("--- DRY RUN MODE ENABLED: No files will be moved. ---")
-        
-        # Implement Live Mode for File Organization Script
-        else:
-            # confirming if live mode is active
-            logging.warning("--- LIVE RUN MODE ENABLED: File system changes will be made. ---")
-
-            # Create Destination Directories with Python Pathlib
-            destination_dir.mkdir(parents=True, exist_ok=True)
-
-            # Construct the Full Destination File Path in Python
-            destination_file_path = destination_dir / item.name
-
-            # If a file with the same name already exists, we find a new name.
-            counter = 1
-
-            while destination_file_path.exists():
-                # logging in a WARNING
-                logging.warning(f"Conflict: '{destination_file_path}' already exists.")
-
-                # generate a new filename by inserting a counter before the extension
-                new_filename = f"{item.stem} ({counter}){item.suffix}"
-
-                # construct a new Path object for the new destination
-                destination_file_path = destination_dir / new_filename
-
-                # increment the counter
-                counter+=1
-
-            # Implement Error Handling with `try...except` for File Operations
-            try:
-                shutil.move(item, destination_file_path)
-                # It will only be executed if the shutil.move() call succeeds.
-                # Inside the `try` block, log a success message after a file is moved.
-                logging.info(f"Moved: '{item.name}' -> '{destination_file_path}'")
-
-                # Implement Specific Exception Logging in Python
-                # Implement Robust Error Logging in a Python 
-            except (FileExistsError, PermissionError) as e:
-                # This is the detailed error log message.
-                # object 'e' for the specific reason for the failure.
-                logging.error(f"Could not move '{item.name}'. Error: {e}")
-                # ADDITION: A catch-all for any other unexpected errors.
-            except Exception as e:
-                # This is a safety net. If an error other than FileExistsError
-                # or PermissionError occurs, we still log it and prevent a crash.
-                logging.error(f"An unexpected error occurred while processing '{item.name}'. Error: {e}")
-
-
-if __name__=="__main__":        # this block of code runs only when execued from command line , this is our main entry point 
-    parser = argparse.ArgumentParser(description="Organise files in a directory by thei type!")     # object creation for parsing commands and description provides brief summary of what program does
-
-    parser.add_argument('source_directory', help='The path to directory you want to oragnise.')     # 'source_directory': This is the name we will use to access the argument's value later
-
-    # Implement a Dry-Run Feature with argparse
-    parser.add_argument('--dry-run', action='store_true', help='Simulate the organization without moving files.')
-
-    # line to trigger parsing process
-    # takes user command arguments as attribute/input
-    args=parser.parse_args()
-
-    # Configure Python Logging with `basicConfig`
     logging.basicConfig(
-        level=logging.INFO,                 # Define the format of the log messages.
-        format='%(asctime)s - %(levelname)s - %(message)s',
-
-        # specify the handlers, which are the destinations for the log messages.
-        handlers=[
-            # This handler writes log messages to a file named 'organizer.log'.
-            logging.FileHandler("organizer.log"),
-            # This handler writes log messages to the console (standard output).
-            logging.StreamHandler(sys.stdout)
-        ]        
-
+        level=logging.INFO,
+        format="%(asctime)s - %(levelname)s - %(message)s",
+        handlers=[logging.FileHandler("organizer.log"), logging.StreamHandler(sys.stdout)],
     )
 
-# 1. Define the path to the configuration file.
-    #    This robustly locates 'config.json' in the same directory as the script.
+    # Build a robust path to config.json, ensuring it's found in the same directory as the script.
+    # `__file__` is a special variable that holds the path to the current script.
+    # `.parent` gets the directory containing the script.
     config_file_path = pathlib.Path(__file__).parent / "config.json"
-    
-    # 2. Call our new function to load the configuration into a variable.
+
     file_type_map_from_config = load_config(config_file_path)
 
-    # Convert Directory String to a Pathlib Object
     source_path = pathlib.Path(args.source_directory)
 
-    # Validating a Directory Path
-    if not source_path.exists() or not source_path.is_dir():
-        logging.error(f"Error: The provided path '{source_path}' is not a valid directory.")
+    if not source_path.is_dir():
+        logging.error(
+            f"Error: The provided path '{source_path}' is not a valid directory."
+        )
+        sys.exit(1)
 
-        sys.exit(1)     # exist the script and use 1 to denote error
-
-    # printing confirmation message to user, showing the path that was provided
     organize_directory(source_path, args.dry_run, file_type_map_from_config)
