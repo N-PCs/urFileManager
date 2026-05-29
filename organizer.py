@@ -1,34 +1,48 @@
 import argparse;    # for argument parsing 
 import pathlib;     # for file paths
 import sys;         # for exiting script
-import shutil;      # provides high level file operations like moving files.
+import shutil;      # provides high level file operations like moving files
 import logging;     # for Robust Script Output
+import json;        # for json file 
+
 from tqdm import tqdm   # for third party imports
 
+def load_config(config_path: pathlib.Path):
+    """
+    Loads and validates the organization rules from a JSON configuration file.
+    Handles potential errors like a missing file or invalid JSON.
 
-# defining a dictionary as the brain of the organiser
-FILE_TYPE_MAP= {
-    # Add Image File Extensions to a Dictionary
-    "Images" : ['.jpeg', '.jpg', '.png', '.gif', '.svg'],
-    
-    # Add Document Category to File Organizer
-    "Documents" :['.pdf', '.docx', '.txt', '.pptx', '.xlsx'],
+    Args:
+        config_path (pathlib.Path): The path to the config.json file.
 
-    # Extend File Organizer with Audio File Support
-    "Audio" : ['.mp3', '.wav', '.aac'],
+    Returns:
+        dict: A dictionary containing the file type mappings.
+    """
+    # We wrap the entire file operation in a try...except block to handle potential I/O and parsing errors gracefully.
+    try:
+        with open(config_path, 'r') as config_file:
+            config_data = json.load(config_file)
+            return config_data
+        
+    # This 'except' block handles the case where the config.json file does not exist.
+    except FileNotFoundError:
 
-    # Extend File Organizer to Handle Video Files
-    "Video": ['.mp4', '.hevc', '.mov', '.avi', '.mkv'],
+        # We log a critical error message explaining the problem clearly.
+        logging.error(f"Configuration file not found at: {config_path}")
+        logging.error("Please make sure 'config.json' exists in the same directory as the script.")
 
-    # Add Archive File Category to Python Organizer
-    "Archives" : ['.zip', '.rar', '.gz'],
+        # We exit the script with a non-zero status code to indicate an error.
+        sys.exit(1)
 
-    # Implement a Catch-All Category for a File Organizer
-    "Others" : []
-}
+    # This 'except' block handles errors during the JSON parsing process.
+    # This can happen if the file has a syntax error.
+    except json.JSONDecodeError as e:
+        logging.error(f"Error parsing configuration file: {config_path}")
+        logging.error(f"The file contains invalid JSON. Please check the syntax. Details: {e}")
+        sys.exit(1)
 
 # Refactor Script Logic into a Main Function
-def organize_directory(source_path: pathlib.Path, dry_run: bool):
+def organize_directory(source_path: pathlib.Path, dry_run: bool, file_type_map: dict):
     """
     Scans a directory and organizes files into subdirectories based on their type.
 
@@ -37,8 +51,9 @@ def organize_directory(source_path: pathlib.Path, dry_run: bool):
     folders, and moving the files.
 
     Args:
-        source_path (pathlib.Path): The Path object representing the directory
-                                    to be organized.
+        source_path (pathlib.Path): The directory to be organized.
+        dry_run (bool): If True, simulate without moving files.
+        file_type_map (dict): A dictionary mapping folder names to file extensions.
     """
     # The confirmation print statement is now moved inside our main function.
     # All future organizing logic will be added here. 
@@ -58,7 +73,7 @@ def organize_directory(source_path: pathlib.Path, dry_run: bool):
         file_extension = item.suffix
         
         destination_folder_name = 'Others'
-        for category, extensions in FILE_TYPE_MAP.items():
+        for category, extensions in file_type_map.items():
             if file_extension in extensions:
                 destination_folder_name = category
                 break
@@ -151,6 +166,13 @@ if __name__=="__main__":        # this block of code runs only when execued from
 
     )
 
+# 1. Define the path to the configuration file.
+    #    This robustly locates 'config.json' in the same directory as the script.
+    config_file_path = pathlib.Path(__file__).parent / "config.json"
+    
+    # 2. Call our new function to load the configuration into a variable.
+    file_type_map_from_config = load_config(config_file_path)
+
     # Convert Directory String to a Pathlib Object
     source_path = pathlib.Path(args.source_directory)
 
@@ -161,4 +183,4 @@ if __name__=="__main__":        # this block of code runs only when execued from
         sys.exit(1)     # exist the script and use 1 to denote error
 
     # printing confirmation message to user, showing the path that was provided
-    organize_directory(source_path, args.dry_run)
+    organize_directory(source_path, args.dry_run, file_type_map_from_config)
