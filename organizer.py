@@ -3,10 +3,28 @@ import argparse;    # for argument parsing
 import pathlib;     # for file paths
 
 # defining a dictionary as the brain of the organiser
-FILE_TYPE_MAP= {}
+FILE_TYPE_MAP= {
+    # Add Image File Extensions to a Dictionary
+    "Images" : ['.jpeg', '.jpg', '.png', '.gif', '.svg'],
+    
+    # Add Document Category to File Organizer
+    "Documents" :['.pdf', '.docx', '.txt', '.pptx', '.xlsx'],
+
+    # Extend File Organizer with Audio File Support
+    "Audio" : ['.mp3', '.wav', '.aac'],
+
+    # Extend File Organizer to Handle Video Files
+    "Video": ['.mp4', '.hevc', '.mov', '.avi', '.mkv'],
+
+    # Add Archive File Category to Python Organizer
+    "Archives" : ['.zip', '.rar', '.gz'],
+
+    # Implement a Catch-All Category for a File Organizer
+    "Others" : []
+}
 
 if __name__=="__main__":        # this block of code runs only when execued from command line , this is our main entry point 
-    parser = argparse.ArgumentParser(description="Organise file sin a directory by thei type!")     # object creation for parsing commands and description provides brief summary of what program does
+    parser = argparse.ArgumentParser(description="Organise files in a directory by thei type!")     # object creation for parsing commands and description provides brief summary of what program does
 
     parser.add_argument('source_directory', help='The path to directory you want to oragnise.')     # 'source_directory': This is the name we will use to access the argument's value later
 
