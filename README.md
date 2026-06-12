@@ -15,6 +15,30 @@ A cross-platform, native C++ utility that organizes cluttered folders into categ
 - **Editable Config** — Add file types or categories via `config.json` — no recompile needed
 - **GUI + CLI Modes** — Double-click for the GUI, or pass a folder path for scripting
 
+## Project Structure
+
+```
+├── frontend-web/              # React + Vite marketing site
+│   ├── src/
+│   └── public/
+├── frontend-desktop/          # Desktop GUI applications
+│   ├── gui_win32.cpp          # Windows native Win32 GUI (C++)
+│   ├── gui_fltk.cpp           # Cross-platform FLTK GUI (C++, Linux/macOS)
+│   ├── gui.cpp                # GUI redirect (platform dispatch)
+│   ├── core.h / core.cpp      # Shared cross-platform logic
+│   ├── build.bat              # Windows build script
+│   ├── build.sh               # Linux build script
+│   ├── build_mac.sh           # macOS build script
+│   ├── organizer.bat          # Windows CLI wrapper
+│   ├── run.bat                # Windows GUI launcher
+│   ├── organizer.rc           # Windows resource file
+│   └── organizer.manifest     # Windows manifest
+├── organizer.py               # Python CLI (cross-platform)
+├── config.json                # Sorting rules configuration
+├── scripts/                   # Release automation
+└── release/                   # Release binaries
+```
+
 ## Quick Start
 
 ### Windows
@@ -88,29 +112,9 @@ pip install tqdm
 python organizer.py ~/Downloads
 ```
 
-## Project Structure
+## Contributor
 
-```
-├── frontend-web/              # React + Vite marketing site
-│   ├── src/
-│   └── public/
-├── frontend-desktop/          # Desktop GUI applications
-│   ├── gui_win32.cpp          # Windows native Win32 GUI (C++)
-│   ├── gui_fltk.cpp           # Cross-platform FLTK GUI (C++, Linux/macOS)
-│   ├── gui.cpp                # GUI redirect (platform dispatch)
-│   ├── core.h / core.cpp      # Shared cross-platform logic
-│   ├── build.bat              # Windows build script
-│   ├── build.sh               # Linux build script
-│   ├── build_mac.sh           # macOS build script
-│   ├── organizer.bat          # Windows CLI wrapper
-│   ├── run.bat                # Windows GUI launcher
-│   ├── organizer.rc           # Windows resource file
-│   └── organizer.manifest     # Windows manifest
-├── organizer.py               # Python CLI (cross-platform)
-├── config.json                # Sorting rules configuration
-├── scripts/                   # Release automation
-└── release/                   # Release binaries
-```
+Made with ❤️ by @N-PCs 
 
 ## License
 
