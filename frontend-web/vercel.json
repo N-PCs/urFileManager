@@ -1,0 +1,25 @@
+{
+  "headers": [
+    {
+      "source": "/(.*\\.zip)",
+      "headers": [
+        { "key": "Content-Type", "value": "application/zip" },
+        { "key": "Content-Disposition", "value": "attachment" }
+      ]
+    },
+    {
+      "source": "/(.*\\.tar\\.gz)",
+      "headers": [
+        { "key": "Content-Type", "value": "application/gzip" },
+        { "key": "Content-Disposition", "value": "attachment" }
+      ]
+    },
+    {
+      "source": "/(.*\\.gz)",
+      "headers": [
+        { "key": "Content-Type", "value": "application/gzip" },
+        { "key": "Content-Disposition", "value": "attachment" }
+      ]
+    }
+  ]
+}
