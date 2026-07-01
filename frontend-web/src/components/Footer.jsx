@@ -17,8 +17,9 @@ export default function Footer() {
         </div>
 
         <p className="footer-copy">
-          © {new Date().getFullYear()} urFileManager. Native C++, fully offline, no tracking.
-        </p>
+          © {new Date().getFullYear()} urFileManager. Native C++, fully offline, no tracking.                                        <span justify content='right' className='footer-copy' style={{color:"blue", alignItems:"right"}}>made with ❤️ by <a href="https://github.com/N-PCs" color='blue'>N-PCs</a></span>
+        </p>        
+
       </div>
     </footer>
   )

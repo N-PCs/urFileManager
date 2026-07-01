@@ -1,24 +1,29 @@
 {
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist",
   "headers": [
     {
-      "source": "/(.*\\.zip)",
+      "source": "/urfm-windows.zip",
       "headers": [
         { "key": "Content-Type", "value": "application/zip" },
-        { "key": "Content-Disposition", "value": "attachment" }
+        { "key": "Content-Disposition", "value": "attachment; filename=\"urfm-windows.zip\"" },
+        { "key": "Cache-Control", "value": "public, max-age=3600" }
       ]
     },
     {
-      "source": "/(.*\\.tar\\.gz)",
+      "source": "/urfm-linux.tar.gz",
       "headers": [
         { "key": "Content-Type", "value": "application/gzip" },
-        { "key": "Content-Disposition", "value": "attachment" }
+        { "key": "Content-Disposition", "value": "attachment; filename=\"urfm-linux.tar.gz\"" },
+        { "key": "Cache-Control", "value": "public, max-age=3600" }
       ]
     },
     {
-      "source": "/(.*\\.gz)",
+      "source": "/urfm-macos.tar.gz",
       "headers": [
         { "key": "Content-Type", "value": "application/gzip" },
-        { "key": "Content-Disposition", "value": "attachment" }
+        { "key": "Content-Disposition", "value": "attachment; filename=\"urfm-macos.tar.gz\"" },
+        { "key": "Cache-Control", "value": "public, max-age=3600" }
       ]
     }
   ]
