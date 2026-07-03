@@ -98,7 +98,19 @@
 }
 
 @media (max-width: 640px) {
+  .hero {
+    padding: 100px 0 64px;
+  }
+
   .hero::before {
     display: none;
+  }
+
+  .hero-title {
+    font-size: 1.75rem;
+  }
+
+  .hero-description {
+    font-size: 0.9375rem;
   }
 }

@@ -88,6 +88,26 @@
   }
 }
 
+@media (max-width: 640px) {
+  .themes-showcase {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+
+  .theme-card {
+    padding: 12px;
+  }
+
+  .theme-preview {
+    height: 36px;
+    margin-bottom: 8px;
+  }
+
+  .theme-name {
+    font-size: 0.8125rem;
+  }
+}
+
 @media (max-width: 480px) {
   .themes-showcase {
     grid-template-columns: 1fr;

@@ -77,13 +77,28 @@
 }
 
 @media (max-width: 640px) {
+  .footer {
+    padding: 32px 0;
+  }
+
   .footer-inner {
     grid-template-columns: 1fr;
     text-align: center;
+    gap: 16px;
   }
 
   .footer-links {
     justify-content: center;
     flex-wrap: wrap;
+    gap: 16px;
+  }
+
+  .footer-links a {
+    font-size: 0.8125rem;
+  }
+
+  .footer-copy {
+    font-size: 0.75rem;
+    padding-top: 16px;
   }
 }

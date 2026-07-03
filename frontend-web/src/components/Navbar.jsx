@@ -3,7 +3,7 @@ import './Navbar.css'
 export default function Navbar() {
   return (
     <header className="navbar">
-      <div className="container navbar-inner">
+      <div className="navbar-inner">
         <a href="#" className="navbar-brand">
           urFileManager
         </a>
@@ -14,7 +14,7 @@ export default function Navbar() {
           <a href="#themes">Themes</a>
         </nav>
 
-        <a href="#download" className="btn btn-primary navbar-cta">
+        <a href="#download" className="btn btn-primary navbar-cta" style={{ color: "black" }}>
           Download
         </a>
       </div>

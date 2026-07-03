@@ -83,8 +83,25 @@
   }
 }
 
-@media (max-width: 560px) {
+@media (max-width: 640px) {
+  .features-header {
+    margin-bottom: 36px;
+  }
+
   .features-grid {
     grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .feature-card {
+    padding: 20px;
+  }
+
+  .feature-title {
+    font-size: 0.9375rem;
+  }
+
+  .feature-desc {
+    font-size: 0.8125rem;
   }
 }

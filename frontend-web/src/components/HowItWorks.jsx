@@ -274,8 +274,8 @@ export default function HowItWorks() {
           ))}
         </div>
 
-        {/* Workflow diagram */}
-        <div className="hiw-workflow card" aria-hidden="true">
+        {/* Workflow diagram — desktop */}
+        <div className="hiw-workflow hiw-workflow-desktop card" aria-hidden="true">
           <div className="workflow-toolbar">
             <div className="workflow-toolbar-left">
               <span className="workflow-dot" />
@@ -383,6 +383,66 @@ export default function HowItWorks() {
                   </div>
                   <span className="workflow-port workflow-port-out" />
                   {isActive && <span className="workflow-pulse" />}
+                </div>
+              )
+            })}
+          </div>
+
+          <div className="workflow-footer">
+            <div className="workflow-progress">
+              <div
+                className="workflow-progress-fill"
+                style={{ width: `${((activeStep + 1) / totalSteps) * 100}%` }}
+              />
+            </div>
+            <span className="workflow-footer-text">
+              {activeStep === 0 && 'Messy Downloads/ with 5 loose files'}
+              {activeStep === 1 && 'Scanning file extensions…'}
+              {activeStep === 2 && 'Matching .jpg .pdf .mp3 .mp4 to categories'}
+              {activeStep === 3 && 'Dry-run preview — no files moved yet'}
+              {activeStep === 4 && 'Sorted into Images/, Documents/, Audio/, Video/, Archives/'}
+              {activeStep === 5 && 'PDF report exported — pipeline complete'}
+            </span>
+          </div>
+        </div>
+
+        {/* Workflow diagram — mobile vertical stepper */}
+        <div className="hiw-workflow hiw-workflow-mobile card" aria-hidden="true">
+          <div className="workflow-toolbar">
+            <div className="workflow-toolbar-left">
+              <span className="workflow-dot" />
+              <span className="workflow-dot" />
+              <span className="workflow-dot" />
+              <span className="workflow-title">Organize files</span>
+            </div>
+            <span className="workflow-status">
+              {activeStep + 1}/{totalSteps}
+            </span>
+          </div>
+
+          <div className="mobile-stepper">
+            <div className="mobile-stepper-track" />
+            <div
+              className="mobile-stepper-fill"
+              style={{ height: `${(activeStep / (totalSteps - 1)) * 100}%` }}
+            />
+            {workflowNodes.map((node, index) => {
+              const Icon = node.Icon
+              const isActive = node.id === activeNodeId
+              const isDone = index < activeStep
+
+              return (
+                <div
+                  key={node.id}
+                  className={`mobile-step ${isActive ? 'mobile-step-active' : ''} ${isDone ? 'mobile-step-done' : ''}`}
+                >
+                  <div className="mobile-step-dot" style={{ '--node-accent': node.accent }}>
+                    <Icon />
+                  </div>
+                  <div className="mobile-step-content">
+                    <span className="mobile-step-title">{node.title}</span>
+                    <span className="mobile-step-sub">{node.subtitle}</span>
+                  </div>
                 </div>
               )
             })}

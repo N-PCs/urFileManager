@@ -245,4 +245,27 @@ img {
   .container {
     width: calc(100% - 32px);
   }
+
+  .section-title {
+    font-size: clamp(1.5rem, 5vw, 2rem);
+  }
+
+  .section-subtitle {
+    font-size: 0.9375rem;
+  }
+
+  .btn-lg {
+    padding: 11px 20px;
+    font-size: 0.875rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .section {
+    padding: 48px 0;
+  }
+
+  .container {
+    width: calc(100% - 24px);
+  }
 }
