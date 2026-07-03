@@ -1,27 +1,7 @@
 import './Themes.css'
 
 const themes = [
-  {
-    name: 'Pitch Black',
-    default: true,
-    colors: ['#000000', '#111115', '#6366f1'],
-    vars: {
-      '--bg': '#000000',
-      '--bg-white': '#0d0d0f',
-      '--bg-muted': '#18181f',
-      '--border': '#22222a',
-      '--border-strong': '#33333f',
-      '--text': '#f8fafc',
-      '--text-secondary': '#94a3b8',
-      '--text-muted': '#64748b',
-      '--primary': '#6366f1',
-      '--primary-hover': '#4f46e5',
-      '--secondary': '#818cf8',
-      '--accent': '#c084fc',
-      '--accent-bg': '#1e1b4b',
-      '--accent-soft': '#312e81',
-    },
-  },
+
   {
     name: 'Minimalist Light',
     colors: ['#f8fafc', '#e2e8f0', '#94a3b8'],

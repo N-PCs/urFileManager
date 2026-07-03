@@ -8,7 +8,7 @@ export default function Hero() {
         <div className="hero-copy">
           <p className="hero-eyebrow">Cross-platform file organizer</p>
           <h1 className="hero-title">
-            Turn a messy folder into{' '}
+            Turn a messy folder into an organized one!
             <span className="hero-gradient">organized categories</span>
           </h1>
           <p className="hero-description">
@@ -17,7 +17,7 @@ export default function Hero() {
             and Archives are created automatically. Preview with dry-run before anything moves.
           </p>
           <div className="hero-actions">
-            <a href="#download" className="btn btn-primary btn-lg">
+            <a href="#download" className="btn btn-primary btn-lg " style={{ color: "black" }}>
               Download urFM
             </a>
             <a href="#download" className="btn btn-secondary btn-lg">

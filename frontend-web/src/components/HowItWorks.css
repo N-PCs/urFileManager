@@ -8,13 +8,13 @@
   margin-bottom: 48px;
 }
 
-/* ── Workflow canvas (moved from Hero) ────────────────────── */
+/* ── Workflow canvas ──────────────────────────────────────── */
 
 .hiw-workflow {
   overflow: hidden;
   padding: 0;
   position: relative;
-  margin-bottom: 48px;
+  margin-top: 56px;
   transition: box-shadow 0.3s ease, border-color 0.3s ease;
 }
 
@@ -45,9 +45,9 @@
   border-radius: 50%;
 }
 
-.workflow-dot:nth-child(1) { background: #fca5a5; }
-.workflow-dot:nth-child(2) { background: #fcd34d; }
-.workflow-dot:nth-child(3) { background: #86efac; }
+.workflow-dot:nth-child(1) { background: #ef4444; }
+.workflow-dot:nth-child(2) { background: #eab308; }
+.workflow-dot:nth-child(3) { background: #22c55e; }
 
 .workflow-title {
   margin-left: 6px;
@@ -87,7 +87,7 @@
 }
 
 .workflow-edge {
-  stroke: #94a3b8;
+  stroke: var(--text-muted);
   stroke-dasharray: 3 2;
   transition: stroke 0.4s ease, stroke-width 0.4s ease;
 }
@@ -124,9 +124,9 @@
   height: 100%;
   padding: 8px;
   background: var(--bg-white);
-  border: 1.5px solid var(--border);
-  border-radius: 10px;
-  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.06);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
   transition: all 0.35s ease;
   overflow: hidden;
 }
@@ -187,7 +187,7 @@
   height: 7px;
   border-radius: 50%;
   background: var(--bg-white);
-  border: 2px solid #64748b;
+  border: 2px solid var(--text-muted);
   z-index: 3;
   transition: border-color 0.3s ease, background 0.3s ease;
 }
@@ -308,8 +308,8 @@
 }
 
 .workflow-mini-lit {
-  border-color: #10b981 !important;
-  background: color-mix(in srgb, #10b981 12%, var(--bg-white)) !important;
+  border-color: var(--success) !important;
+  background: color-mix(in srgb, var(--success) 12%, var(--bg-white)) !important;
 }
 
 .workflow-mini-lit svg {
@@ -365,8 +365,8 @@
 }
 
 .workflow-node-active .workflow-node-body {
-  border-color: var(--secondary);
-  box-shadow: 0 0 0 2px rgba(30, 58, 138, 0.14), 0 6px 20px rgba(15, 23, 42, 0.1);
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--primary) 20%, transparent), var(--shadow-md);
 }
 
 .workflow-node-active .workflow-node-icon {
@@ -380,12 +380,12 @@
 }
 
 .workflow-node-done .workflow-node-body {
-  border-color: #86efac;
+  border-color: var(--success);
 }
 
 .workflow-node-done .workflow-port-out {
-  border-color: #22c55e;
-  background: #22c55e;
+  border-color: var(--success);
+  background: var(--success);
 }
 
 .workflow-pulse {
@@ -419,7 +419,7 @@
 
 .workflow-progress-fill {
   height: 100%;
-  background: linear-gradient(90deg, #6366f1, #2563eb, #059669);
+  background: linear-gradient(90deg, var(--primary), var(--secondary));
   border-radius: 2px;
   transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -476,8 +476,8 @@
   height: 36px;
   font-size: 0.875rem;
   font-weight: 700;
-  color: #fff;
-  background: var(--secondary);
+  color: var(--bg);
+  background: var(--primary);
   border-radius: 50%;
   margin-bottom: 16px;
 }

@@ -31,6 +31,7 @@
 #define WM_APP_PROGRESS (WM_USER + 2)
 #define WM_APP_STATUS   (WM_USER + 3)
 #define WM_APP_DONE     (WM_USER + 4)
+#define WM_APP_UNDO_DONE (WM_USER + 5)
 
 #define IDC_PATH_EDIT       1001
 #define IDC_BROWSE_BTN      1002
@@ -44,6 +45,7 @@
 #define IDC_REPORT_LIST     1010
 #define IDC_SAVE_PDF_BTN    1011
 #define IDC_CLOSE_REPORT_BTN 1012
+#define IDC_UNDO_BTN        1013
 
 struct Theme {
     std::wstring name;
@@ -89,7 +91,7 @@ struct MovedFileInfoStr { std::string fileName, category, status; uint64_t fileS
 void GeneratePDFReportStr(const std::string& outputPath, const std::string& targetFolder,
                           const std::vector<MovedFileInfoStr>& movedFiles, bool dryRun);
 
-HWND g_hMain = NULL, g_hPath = NULL, g_hBrowse = NULL, g_hDryRun = NULL, g_hCfg = NULL, g_hLogBtn = NULL, g_hAction = NULL, g_hLog = NULL, g_hTheme = NULL, g_hReport = NULL;
+HWND g_hMain = NULL, g_hPath = NULL, g_hBrowse = NULL, g_hDryRun = NULL, g_hCfg = NULL, g_hLogBtn = NULL, g_hAction = NULL, g_hLog = NULL, g_hTheme = NULL, g_hReport = NULL, g_hUndo = NULL;
 int g_themeIdx = 0;
 HFONT g_fTitle, g_fSub, g_fNormal, g_fBold, g_fLog;
 HBRUSH g_bWindow, g_bCard, g_bEdit, g_bLog;
@@ -103,6 +105,12 @@ bool g_lastDryRun = false;
 double g_dpi = 1.0;
 int SX(int x) { return (int)(x * g_dpi); }
 int SY(int y) { return (int)(y * g_dpi); }
+
+struct UndoRecord {
+    std::wstring originalPath;
+    std::wstring movedPath;
+};
+std::vector<UndoRecord> g_undoHistory;
 
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 LRESULT CALLBACK BtnSubclass(HWND, UINT, WPARAM, LPARAM, UINT_PTR, DWORD_PTR);
@@ -239,12 +247,21 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE, LPSTR, int nShow) {
     wc.hCursor = LoadCursor(NULL, IDC_ARROW); wc.hIcon = LoadIcon(NULL, IDI_APPLICATION);
     RegisterClassW(&wc);
 
-    RECT rc = {0,0,SX(740),SY(560)}; AdjustWindowRect(&rc, WS_OVERLAPPED|WS_CAPTION|WS_SYSMENU|WS_MINIMIZEBOX, FALSE);
-    g_hMain = CreateWindowExW(0, L"UrFmWinGUI", L"urFileManager",
+    RECT rc = {0,0,SX(740),SY(580)}; AdjustWindowRect(&rc, WS_OVERLAPPED|WS_CAPTION|WS_SYSMENU|WS_MINIMIZEBOX, FALSE);
+    g_hMain = CreateWindowExW(WS_EX_NOREDIRECTIONBITMAP, L"UrFmWinGUI", L"urFileManager",
         WS_OVERLAPPED|WS_CAPTION|WS_SYSMENU|WS_MINIMIZEBOX, CW_USEDEFAULT, CW_USEDEFAULT,
         rc.right-rc.left, rc.bottom-rc.top, NULL, NULL, hInst, NULL);
     if (!g_hMain) return 0;
-    BOOL dark = TRUE; DwmSetWindowAttribute(g_hMain, 20, &dark, sizeof(dark));
+
+    BOOL dark = TRUE;
+    DwmSetWindowAttribute(g_hMain, 20, &dark, sizeof(dark));
+    int backdropType = 2;
+    DwmSetWindowAttribute(g_hMain, 38, &backdropType, sizeof(backdropType));
+    BOOL useMica = TRUE;
+    DwmSetWindowAttribute(g_hMain, 1029, &useMica, sizeof(useMica));
+
+    MARGINS m = {-1,-1,-1,-1};
+    DwmExtendFrameIntoClientArea(g_hMain, &m);
     ShowWindow(g_hMain, nShow); UpdateWindow(g_hMain);
     MSG msg; while (GetMessage(&msg, NULL, 0, 0)) { TranslateMessage(&msg); DispatchMessage(&msg); }
     CoUninitialize(); return 0;
@@ -310,10 +327,17 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
         SendMessage(g_hAction, WM_SETFONT, (WPARAM)g_fBold, TRUE);
         SetWindowSubclass(g_hAction, BtnSubclass, IDC_ACTION_BTN, 1);
 
+        // Undo button
+        g_hUndo = CreateWindowExW(0, L"BUTTON", L"Undo Last Organize",
+            WS_CHILD|WS_VISIBLE, SX(250),SY(245),SX(200),SY(38), hWnd, (HMENU)IDC_UNDO_BTN, GetModuleHandle(NULL), NULL);
+        SendMessage(g_hUndo, WM_SETFONT, (WPARAM)g_fBold, TRUE);
+        SetWindowSubclass(g_hUndo, BtnSubclass, IDC_UNDO_BTN, 2);
+        EnableWindow(g_hUndo, FALSE);
+
         // Log console
         g_hLog = CreateWindowExW(WS_EX_CLIENTEDGE, L"EDIT", L"",
             WS_CHILD|WS_VISIBLE|WS_VSCROLL|ES_MULTILINE|ES_AUTOVSCROLL|ES_READONLY,
-            SX(35),SY(340),SX(670),SY(185), hWnd, (HMENU)IDC_LOG_CONSOLE, GetModuleHandle(NULL), NULL);
+            SX(35),SY(350),SX(670),SY(190), hWnd, (HMENU)IDC_LOG_CONSOLE, GetModuleHandle(NULL), NULL);
         SendMessage(g_hLog, WM_SETFONT, (WPARAM)g_fLog, TRUE);
         SendMessage(g_hLog, EM_SETMARGINS, EC_LEFTMARGIN|EC_RIGHTMARGIN, MAKELPARAM(6,6));
 
@@ -395,7 +419,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
                     bool dry = SendMessage(g_hDryRun, BM_GETCHECK, 0, 0) == BST_CHECKED;
                     g_running = true; g_cancel = false; g_processed = 0; g_total = 0; g_status = L"Scanning...";
                     g_movedFiles.clear(); g_srcDir.clear(); g_lastDryRun = false;
-                    ShowWindow(g_hReport, SW_HIDE);
+                    g_undoHistory.clear();
+                    ShowWindow(g_hReport, SW_HIDE); EnableWindow(g_hUndo, FALSE);
                     EnableWindow(g_hPath, FALSE); EnableWindow(g_hBrowse, FALSE); EnableWindow(g_hDryRun, FALSE);
                     EnableWindow(g_hCfg, FALSE); EnableWindow(g_hLogBtn, FALSE);
                     SetWindowTextW(g_hAction, L"Cancel");
@@ -411,7 +436,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
                         size_t total = f.size(); PostMessage(h, WM_APP_PROGRESS, 0, (LPARAM)total);
                         if (total == 0) { AppendLog(L"No files found."); PostMessage(h,WM_APP_DONE,0,0); delete p; return; }
                         std::wofstream log(L"organizer.log", std::ios::app);
-                        size_t ok = 0; std::vector<MovedFileInfo> moved;
+                        size_t ok = 0; std::vector<MovedFileInfo> moved; std::vector<UndoRecord> undo;
                         for (const auto& fp : f) {
                             if (g_cancel) { AppendLog(L"Cancelled by user."); break; }
                             std::wstring ext = fp.extension().wstring();
@@ -437,6 +462,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
                                     AppendLog(L"  Moved: " + fn + L" -> " + dest + L"/");
                                     if (log.is_open()) log << L"MOVED: " << fn << L"\n";
                                     ok++; moved.push_back({fn, dest, ctr>1?L"Renamed":L"Moved", sz});
+                                    undo.push_back({fp.wstring(), df.wstring()});
                                 } catch (const std::exception& e) {
                                     std::string es=e.what(); std::wstring we(es.begin(),es.end());
                                     AppendLog(L"  ERROR: " + fn + L" - " + we);
@@ -446,16 +472,52 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
                             g_processed = ok; PostMessage(h, WM_APP_PROGRESS, ok, total);
                         }
                         if (log.is_open()) log.close();
-                        g_movedFiles = moved; g_srcDir = src; g_lastDryRun = dry;
-                        if (!moved.empty()) {
-                            std::string reportPath = (sp / (dry ? L"organization_report_preview.pdf" : L"organization_report.pdf")).string();
-                            std::string srcA(src.begin(), src.end());
-                            // Worker thread cannot call GeneratePDFReport (not linked), so the PDF is generated when user clicks "Save as PDF" in the report dialog, or from the CLI path.
+                        g_movedFiles = moved; g_srcDir = src; g_lastDryRun = dry; g_undoHistory = undo;
+                        if (!dry && !undo.empty()) {
+                            AppendLog(L"Undo history saved. " + std::to_wstring(undo.size()) + L" file(s) can be reverted.");
                         }
                         AppendLog(L"Done. Processed " + std::to_wstring(ok) + L"/" + std::to_wstring(total) + L" files.");
                         PostMessage(h, WM_APP_DONE, 0, 0); delete p;
                     }, p).detach();
                 }
+                break;
+            }
+            case IDC_UNDO_BTN: {
+                if (g_undoHistory.empty()) { MessageBoxW(hWnd, L"No undo history available.", L"Undo", MB_OK|MB_ICONINFORMATION); break; }
+                if (g_running) { MessageBoxW(hWnd, L"Please wait for the current operation to finish.", L"Busy", MB_OK|MB_ICONWARNING); break; }
+                int confirm = MessageBoxW(hWnd,
+                    (L"Revert " + std::to_wstring(g_undoHistory.size()) + L" moved file(s) back to their original locations?").c_str(),
+                    L"Confirm Undo", MB_YESNO|MB_ICONQUESTION);
+                if (confirm != IDYES) break;
+                g_running = true; g_cancel = false; g_status = L"Reverting...";
+                EnableWindow(g_hAction, FALSE); EnableWindow(g_hUndo, FALSE);
+                SetWindowTextW(g_hAction, L"Cancel");
+                EnableWindow(g_hPath, FALSE); EnableWindow(g_hBrowse, FALSE); EnableWindow(g_hDryRun, FALSE);
+                std::thread([](HWND h) {
+                    AppendLog(L"Starting undo — reverting moved files...");
+                    size_t ok = 0, err = 0;
+                    for (const auto& rec : g_undoHistory) {
+                        if (g_cancel) { AppendLog(L"Undo cancelled."); break; }
+                        try {
+                            if (std::filesystem::exists(rec.movedPath)) {
+                                std::filesystem::path origDir = std::filesystem::path(rec.originalPath).parent_path();
+                                if (!std::filesystem::exists(origDir)) std::filesystem::create_directories(origDir);
+                                std::filesystem::rename(rec.movedPath, std::filesystem::path(rec.originalPath));
+                                AppendLog(L"  Reverted: " + std::filesystem::path(rec.movedPath).filename().wstring());
+                                ok++;
+                            } else {
+                                AppendLog(L"  Skipped (not found): " + std::filesystem::path(rec.movedPath).filename().wstring());
+                            }
+                        } catch (const std::exception& e) {
+                            std::string es = e.what(); std::wstring we(es.begin(), es.end());
+                            AppendLog(L"  Undo error: " + std::filesystem::path(rec.movedPath).filename().wstring() + L" - " + we);
+                            err++;
+                        }
+                    }
+                    AppendLog(L"Undo complete. Reverted " + std::to_wstring(ok) + L" file(s)." + (err > 0 ? (L" Errors: " + std::to_wstring(err)) : L""));
+                    g_undoHistory.clear();
+                    PostMessage(h, WM_APP_UNDO_DONE, 0, 0);
+                }, hWnd).detach();
                 break;
             }
             }
@@ -468,7 +530,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
                 InvalidateRect(g_hDryRun, NULL, TRUE); InvalidateRect(g_hCfg, NULL, TRUE);
                 InvalidateRect(g_hLogBtn, NULL, TRUE); InvalidateRect(g_hAction, NULL, TRUE);
                 InvalidateRect(g_hReport, NULL, TRUE); InvalidateRect(g_hLog, NULL, TRUE);
-                InvalidateRect(g_hTheme, NULL, TRUE);
+                InvalidateRect(g_hTheme, NULL, TRUE); InvalidateRect(g_hUndo, NULL, TRUE);
             }
         }
         break;
@@ -490,7 +552,17 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
         EnableWindow(g_hPath, TRUE); EnableWindow(g_hBrowse, TRUE); EnableWindow(g_hDryRun, TRUE);
         EnableWindow(g_hCfg, TRUE); EnableWindow(g_hLogBtn, TRUE);
         SetWindowTextW(g_hAction, L"Start Organizing"); EnableWindow(g_hAction, TRUE);
+        if (!g_undoHistory.empty()) EnableWindow(g_hUndo, TRUE);
         if (!g_movedFiles.empty()) { ShowWindow(g_hReport, SW_SHOW); EnableWindow(g_hReport, TRUE); }
+        InvalidateRect(hWnd, NULL, FALSE); break;
+    }
+    case WM_APP_UNDO_DONE: {
+        g_running = false; g_cancel = false;
+        g_status = L"Ready";
+        EnableWindow(g_hPath, TRUE); EnableWindow(g_hBrowse, TRUE); EnableWindow(g_hDryRun, TRUE);
+        EnableWindow(g_hCfg, TRUE); EnableWindow(g_hLogBtn, TRUE);
+        SetWindowTextW(g_hAction, L"Start Organizing"); EnableWindow(g_hAction, TRUE);
+        EnableWindow(g_hUndo, FALSE);
         InvalidateRect(hWnd, NULL, FALSE); break;
     }
 
@@ -503,10 +575,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
         const auto& t = g_themes[g_themeIdx];
         FillRect(mdc, &rc, g_bWindow);
 
-        // Header background
-        RECT headRc = {0,0,w,SY(95)};
-        HBRUSH hHead = CreateSolidBrush(t.cardBg);
-        FillRect(mdc, &headRc, hHead); DeleteObject(hHead);
+        // Glassmorphic card panel (semi-transparent)
+        RECT cardRc = {SX(20), SY(80), SX(720), SY(260)};
+        HBRUSH hCard = CreateSolidBrush(RGB(
+            GetRValue(t.cardBg), GetGValue(t.cardBg), GetBValue(t.cardBg)));
+        HPEN hPen = CreatePen(PS_SOLID, 1, t.eNorm);
+        auto ob2 = SelectObject(mdc, hCard); auto op2 = SelectObject(mdc, hPen);
+        RoundRect(mdc, cardRc.left, cardRc.top, cardRc.right, cardRc.bottom, SX(12), SX(12));
+        SelectObject(mdc, ob2); SelectObject(mdc, op2); DeleteObject(hPen); DeleteObject(hCard);
 
         // Title
         SetBkMode(mdc, TRANSPARENT);
@@ -519,19 +595,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
         SetTextColor(mdc, t.textSub); SelectObject(mdc, g_fSub);
         TextOutW(mdc, SX(22), SY(55), L"Organize loose files into categorized folders in seconds.", 58);
 
-        // Card panel
-        RECT cardRc = {SX(20), SY(80), SX(720), SY(235)};
-        HBRUSH hCard = CreateSolidBrush(t.cardBg);
-        HPEN hPen = CreatePen(PS_SOLID, 1, t.eNorm);
-        auto ob2 = SelectObject(mdc, hCard); auto op2 = SelectObject(mdc, hPen);
-        RoundRect(mdc, cardRc.left, cardRc.top, cardRc.right, cardRc.bottom, SX(12), SX(12));
-        SelectObject(mdc, ob2); SelectObject(mdc, op2); DeleteObject(hPen); DeleteObject(hCard);
-
         // Field labels
         SetTextColor(mdc, t.textNormal); SelectObject(mdc, g_fBold);
         TextOutW(mdc, SX(35), SY(92), L"Target Directory", 16);
 
-        // Edit box border
+        // Edit box border (glassmorphic)
         bool eHov = GetPropW(g_hPath, L"hovering") != NULL;
         bool eFoc = GetFocus() == g_hPath;
         HPEN hEp = CreatePen(PS_SOLID, 1, eFoc ? t.eFocus : (eHov ? t.eHover : t.eNorm));
@@ -546,10 +614,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 
         // Status
         SetTextColor(mdc, t.textNormal); SelectObject(mdc, g_fSub);
-        TextOutW(mdc, SX(250), SY(255), g_status.c_str(), (int)g_status.length());
+        TextOutW(mdc, SX(460), SY(255), g_status.c_str(), (int)g_status.length());
 
-        // Progress bar
-        RECT pb = {SX(35), SY(290), SX(705), SY(300)};
+        // Progress bar (glassmorphic)
+        RECT pb = {SX(35), SY(300), SX(705), SY(310)};
         HBRUSH hp = CreateSolidBrush(t.editBg);
         FillRect(mdc, &pb, hp); DeleteObject(hp);
         if (g_total > 0) {
@@ -561,12 +629,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 
         // Console label
         SetTextColor(mdc, t.textNormal); SelectObject(mdc, g_fBold);
-        TextOutW(mdc, SX(35), SY(315), L"Live Log", 8);
+        TextOutW(mdc, SX(35), SY(330), L"Live Log", 8);
 
         // Separator line
         HPEN hSp = CreatePen(PS_SOLID, 1, t.eNorm);
         auto op5 = SelectObject(mdc, hSp);
-        MoveToEx(mdc, SX(35), SY(335), NULL); LineTo(mdc, SX(705), SY(335));
+        MoveToEx(mdc, SX(35), SY(345), NULL); LineTo(mdc, SX(705), SY(345));
         SelectObject(mdc, op5); DeleteObject(hSp);
 
         BitBlt(hdc, 0, 0, w, h, mdc, 0, 0, SRCCOPY);
@@ -586,6 +654,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 
 LRESULT CALLBACK BtnSubclass(HWND h, UINT msg, WPARAM w, LPARAM l, UINT_PTR, DWORD_PTR ref) {
     bool prim = (ref == 1);
+    bool undo = (ref == 2);
     bool hov = GetPropW(h, L"hov") != NULL;
     bool prs = GetPropW(h, L"prs") != NULL;
     switch (msg) {
@@ -612,6 +681,12 @@ LRESULT CALLBACK BtnSubclass(HWND h, UINT msg, WPARAM w, LPARAM l, UINT_PTR, DWO
             else if (prs) { bg = t.accentPressed; bd = t.accentPressed; }
             else if (hov) { bg = t.accentHover; bd = t.accentHover; }
             else { bg = t.accent; bd = t.accent; }
+        } else if (undo) {
+            tx = t.textTitle;
+            if (!IsWindowEnabled(h)) { bg = t.cardBg; bd = t.eNorm; tx = t.textSub; }
+            else if (prs) { bg = RGB(180,80,80); bd = RGB(180,80,80); tx = RGB(255,255,255); }
+            else if (hov) { bg = RGB(140,50,50); bd = RGB(140,50,50); tx = RGB(255,255,255); }
+            else { bg = RGB(120,40,40); bd = RGB(160,60,60); tx = RGB(255,200,200); }
         } else {
             tx = t.textNormal;
             if (!IsWindowEnabled(h)) { bg = t.cardBg; bd = t.eNorm; tx = t.textSub; }

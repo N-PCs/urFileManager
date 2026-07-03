@@ -296,8 +296,8 @@ export default function HowItWorks() {
             >
               <defs>
                 <linearGradient id="hiw-edge-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                  <stop offset="0%" stopColor="#6366f1" />
-                  <stop offset="100%" stopColor="#2563eb" />
+                  <stop offset="0%" stopColor="var(--primary)" />
+                  <stop offset="100%" stopColor="var(--secondary)" />
                 </linearGradient>
                 <marker
                   id="hiw-edge-arrow"

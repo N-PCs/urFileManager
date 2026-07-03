@@ -1,29 +1,41 @@
 :root {
-  --bg: #000000;
-  --bg-white: #0d0d0f;
-  --bg-muted: #18181f;
-  --border: #22222a;
-  --border-strong: #33333f;
-  --text: #f8fafc;
-  --text-secondary: #94a3b8;
-  --text-muted: #64748b;
-  --primary: #6366f1;
-  --primary-hover: #4f46e5;
-  --secondary: #818cf8;
-  --secondary-rgb: 129, 140, 248;
-  --accent: #c084fc;
-  --accent-bg: #1e1b4b;
-  --accent-soft: #312e81;
-  --success: #10b981;
-  --danger: #ef4444;
-  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
-  --radius: 10px;
-  --radius-sm: 8px;
+--bg: #0a0a0c;            /* Deep obsidian night canvas */
+  --bg-white: #121214;      /* Sleek, elevated dark dashboard panels */
+  --bg-muted: #1a1a1e;      /* Input fields and inactive list rows */
+  --border: #1e1e24;        /* Sharp, subtle separation lines */
+  --border-strong: #2c2c35; /* Focused/Active item boundaries */
+  
+  /* Typography */
+  --text: #fbfbfb;          /* Stark, crisp off-white for main headers */
+  --text-secondary: #cbcdd5;/* High-readability slate-gray for text layers */
+  --text-muted: #8d8d8f;    /* Faded metadata and minor labels */
+  
+  /* Brand Accents */
+  --primary: #dcf365;       /* The High-Octane Volt Accent */
+  --primary-hover: #cbe24e;  /* Saturated deeper volt on hover */
+  --secondary: #fbfbfb;     /* High-contrast crisp white for secondary buttons */
+  --secondary-rgb: 251, 251, 251;
+  --accent-bg: #1c1d15;     /* Ultra-subtle yellow/green background tint */
+  --accent-soft: #282a1a;   
+  
+  /* Status & Utilities */
+  --success: #10b981;       
+  --danger: #ef4444;        
+  
+  /* Typography Stack */
+  --font-sans: 'JetBrains Mono', 'Montserrat', monospace, sans-serif;
+  
+  /* Layout Geometry */
+  --radius: 8px;            /* Boxier, engineered aesthetic */
+  --radius-sm: 4px;
   --radius-lg: 12px;
-  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.6);
-  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.8);
-  --shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.95);
-  --transition: 0.2s ease;
+  
+  /* Premium Deep Shadows */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.7);
+  --shadow-md: 0 8px 30px rgba(0, 0, 0, 0.85);
+  --shadow-lg: 0 24px 60px rgba(0, 0, 0, 0.95);
+  
+  --transition: 0.15s cubic-bezier(0.16, 1, 0.3, 1);
   transition: background 0.3s ease, color 0.3s ease;
 }
 

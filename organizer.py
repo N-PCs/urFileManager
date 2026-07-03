@@ -260,6 +260,7 @@ def process_file(
     source_path: pathlib.Path,
     file_type_map: dict,
     dry_run: bool,
+    undo_log: list,
 ) -> dict:
     """
     Processes a single file: determines its destination and moves it or simulates the move.
@@ -298,6 +299,7 @@ def process_file(
         try:
             shutil.move(file_path, destination_file_path)
             logging.info(f"Moved: '{file_path.name}' -> '{destination_file_path}'")
+            undo_log.append({"original": str(file_path), "moved": str(destination_file_path)})
             return {
                 "fileName": file_path.name,
                 "category": destination_folder_name,
@@ -337,10 +339,17 @@ def organize_directory(
 
     files_to_process = [item for item in source_path.iterdir() if item.is_file()]
     moved_files = []
+    undo_log = []
 
     for file_item in tqdm(files_to_process, desc="Organizing Files"):
-        res = process_file(file_item, source_path, file_type_map, dry_run)
+        res = process_file(file_item, source_path, file_type_map, dry_run, undo_log)
         moved_files.append(res)
+
+    if not dry_run and undo_log:
+        undo_path = source_path / ".organize_undo.json"
+        with open(undo_path, "w") as f:
+            json.dump({"moves": undo_log, "timestamp": str(datetime.datetime.now())}, f, indent=2)
+        logging.info(f"Undo log saved to: {undo_path}")
 
     if moved_files:
         report_name = "organization_report_preview.pdf" if dry_run else "organization_report.pdf"
@@ -348,6 +357,51 @@ def organize_directory(
         logging.info(f"Generating PDF report: {report_path}")
         generate_pdf_report(report_path, moved_files, dry_run)
         logging.info(f"PDF report successfully created at: {report_path}")
+
+
+def revert_organization(source_path: pathlib.Path):
+    """
+    Reverts a previous organization by reading the undo log and moving files back.
+    """
+    undo_path = source_path / ".organize_undo.json"
+    if not undo_path.exists():
+        logging.error(f"No undo log found at: {undo_path}")
+        logging.error("Cannot revert without an undo log.")
+        return
+
+    with open(undo_path, "r") as f:
+        undo_data = json.load(f)
+
+    moves = undo_data.get("moves", [])
+    if not moves:
+        logging.info("Undo log is empty. Nothing to revert.")
+        return
+
+    logging.info(f"Reverting {len(moves)} file(s)...")
+    reverted = 0
+    errors = 0
+
+    for move in moves:
+        original = pathlib.Path(move["original"])
+        moved = pathlib.Path(move["moved"])
+
+        if not moved.exists():
+            logging.warning(f"File not found (skipped): {moved}")
+            continue
+
+        try:
+            original.parent.mkdir(parents=True, exist_ok=True)
+            shutil.move(moved, original)
+            logging.info(f"Reverted: '{moved.name}' -> '{original}'")
+            reverted += 1
+        except Exception as e:
+            logging.error(f"Failed to revert '{moved.name}': {e}")
+            errors += 1
+
+    logging.info(f"Revert complete. Reverted: {reverted}, Errors: {errors}")
+    if errors == 0:
+        undo_path.unlink()
+        logging.info("Undo log removed.")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
@@ -361,6 +415,11 @@ if __name__ == "__main__":
         "--dry-run",
         action="store_true",
         help="Simulate the organization without moving files.",
+    )
+    parser.add_argument(
+        "--revert",
+        action="store_true",
+        help="Revert a previous organization using the saved undo log.",
     )
     args = parser.parse_args()
 
@@ -385,4 +444,7 @@ if __name__ == "__main__":
         )
         sys.exit(1)
 
-    organize_directory(source_path, args.dry_run, file_type_map_from_config)
+    if args.revert:
+        revert_organization(source_path)
+    else:
+        organize_directory(source_path, args.dry_run, file_type_map_from_config)
