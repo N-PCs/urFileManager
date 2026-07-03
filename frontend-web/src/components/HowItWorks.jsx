@@ -45,7 +45,7 @@ const workflowNodes = [
     x: 1,
     y: 12,
     w: 13,
-    h: 76,
+    h: 110,
     accent: '#6366f1',
     type: 'trigger',
     preview: 'before',
@@ -70,7 +70,7 @@ const workflowNodes = [
     x: 34,
     y: 30,
     w: 13,
-    h: 40,
+    h: 45,
     accent: '#a855f7',
     type: 'action',
   },
@@ -94,7 +94,7 @@ const workflowNodes = [
     x: 67,
     y: 12,
     w: 13,
-    h: 76,
+    h: 110,
     accent: '#2563eb',
     type: 'action',
     preview: 'after',
@@ -128,7 +128,7 @@ const categoryChips = [
   { label: 'Video', ext: '.mp4', Icon: IconVideo, color: '#3b82f6' },
 ]
 
-const CANVAS_H = 100
+const CANVAS_H = 145
 
 function getPort(node, side) {
   switch (side) {
@@ -272,7 +272,7 @@ export default function HowItWorks() {
               <code className="step-code">{step.code}</code>
             </div>
           ))}
-        </div><p></p>
+        </div>
 
         {/* Workflow diagram */}
         <div className="hiw-workflow card" aria-hidden="true">
@@ -343,9 +343,9 @@ export default function HowItWorks() {
                   className={`workflow-node workflow-node-${node.type} ${isExpanded ? 'workflow-node-expanded' : ''} ${isActive ? 'workflow-node-active' : ''} ${isDone ? 'workflow-node-done' : ''}`}
                   style={{
                     left: `${node.x}%`,
-                    top: `${node.y}%`,
+                    top: `${(node.y / CANVAS_H) * 100}%`,
                     width: `${node.w}%`,
-                    height: `${node.h}%`,
+                    height: `${(node.h / CANVAS_H) * 100}%`,
                   }}
                 >
                   <span className="workflow-port workflow-port-in" />

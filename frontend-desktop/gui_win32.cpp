@@ -486,6 +486,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
     }
     case WM_APP_DONE: {
         g_running = false; g_cancel = false;
+        g_status = L"Ready";
         EnableWindow(g_hPath, TRUE); EnableWindow(g_hBrowse, TRUE); EnableWindow(g_hDryRun, TRUE);
         EnableWindow(g_hCfg, TRUE); EnableWindow(g_hLogBtn, TRUE);
         SetWindowTextW(g_hAction, L"Start Organizing"); EnableWindow(g_hAction, TRUE);
@@ -865,11 +866,18 @@ std::string FmtSizeStr(uint64_t b) {
 void GeneratePDFReportStr(const std::string& outputPath, const std::string& targetFolder,
                           const std::vector<MovedFileInfoStr>& movedFiles, bool dryRun) {
     if (movedFiles.empty()) return;
+
+    std::vector<MovedFileInfoStr> sortedFiles = movedFiles;
+    std::sort(sortedFiles.begin(), sortedFiles.end(), [](const MovedFileInfoStr& a, const MovedFileInfoStr& b) {
+        if (a.category != b.category) return a.category < b.category;
+        return a.fileName < b.fileName;
+    });
+
     uint64_t totalSize = 0;
-    for (const auto& f : movedFiles) if (f.status.find("Error") == std::string::npos) totalSize += f.fileSize;
+    for (const auto& f : sortedFiles) if (f.status.find("Error") == std::string::npos) totalSize += f.fileSize;
     std::string totalSizeStr = FmtSizeStr(totalSize);
     const size_t rpf = 25, rps = 32;
-    size_t total = movedFiles.size(), pc = 1;
+    size_t total = sortedFiles.size(), pc = 1;
     if (total > rpf) pc = 1 + (total - rpf + rps - 1) / rps;
 
     auto now = std::chrono::system_clock::now();
@@ -910,7 +918,7 @@ void GeneratePDFReportStr(const std::string& outputPath, const std::string& targ
         }
         size_t items = (p==0)?rpf:rps, drawn=0;
         for (size_t r=0; r<items && fi<total; ++r, ++fi) {
-            const auto& f = movedFiles[fi]; size_t ry = sy-20-(r*20); drawn++;
+            const auto& f = sortedFiles[fi]; size_t ry = sy-20-(r*20); drawn++;
             if (r%2==1) ss << "0.97 0.97 0.99 rg 40 " << ry << " 515 20 re f\n";
             ss << "0.9 0.9 0.9 RG 0.5 w 40 " << ry << " m 555 " << ry << " l S\n";
             size_t ty = ry+6;

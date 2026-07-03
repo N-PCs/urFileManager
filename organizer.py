@@ -88,6 +88,9 @@ def generate_pdf_report(report_path: pathlib.Path, moved_files: list, dry_run: b
     if not moved_files:
         return
 
+    # Sort files by category and then filename to make the report structured
+    moved_files = sorted(moved_files, key=lambda x: (x.get("category", ""), x.get("fileName", "")))
+
     # Calculate total space
     total_size = sum(f["fileSize"] for f in moved_files if f["status"] in ("Moved", "Renamed", "Dry Run Preview"))
     total_size_str = format_size(total_size)

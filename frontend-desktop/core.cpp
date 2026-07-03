@@ -112,14 +112,20 @@ void GeneratePDFReport(const std::string& outputPath, const std::string& targetF
                        const std::vector<MovedFileInfo>& movedFiles, bool dryRun) {
     if (movedFiles.empty()) return;
 
+    std::vector<MovedFileInfo> sortedFiles = movedFiles;
+    std::sort(sortedFiles.begin(), sortedFiles.end(), [](const MovedFileInfo& a, const MovedFileInfo& b) {
+        if (a.category != b.category) return a.category < b.category;
+        return a.fileName < b.fileName;
+    });
+
     uint64_t totalSize = 0;
-    for (const auto& f : movedFiles)
+    for (const auto& f : sortedFiles)
         if (f.status.find("Error") == std::string::npos)
             totalSize += f.fileSize;
     std::string totalSizeStr = FormatSize(totalSize);
 
     const size_t rowsPerPageFirst = 25, rowsPerPageSubsequent = 32;
-    size_t total = movedFiles.size(), pageCount = 1;
+    size_t total = sortedFiles.size(), pageCount = 1;
     if (total > rowsPerPageFirst)
         pageCount = 1 + (total - rowsPerPageFirst + rowsPerPageSubsequent - 1) / rowsPerPageSubsequent;
 
@@ -171,7 +177,7 @@ void GeneratePDFReport(const std::string& outputPath, const std::string& targetF
         size_t items = (p == 0) ? rowsPerPageFirst : rowsPerPageSubsequent;
         size_t drawn = 0;
         for (size_t r = 0; r < items && fileIdx < total; ++r, ++fileIdx) {
-            const auto& f = movedFiles[fileIdx];
+            const auto& f = sortedFiles[fileIdx];
             size_t rowY = startY - 20 - (r * 20);
             drawn++;
             if (r % 2 == 1) ss << "0.97 0.97 0.99 rg 40 " << rowY << " 515 20 re f\n";

@@ -125,9 +125,9 @@
   margin: 0 0 32px;
   padding: 14px 18px;
   border-radius: var(--radius);
-  border: 1px solid #fcd34d;
-  background: #fffbeb;
-  color: #92400e;
+  border: 1px solid color-mix(in srgb, #d97706 40%, var(--border));
+  background: color-mix(in srgb, #d97706 8%, var(--bg-white));
+  color: color-mix(in srgb, #d97706 75%, var(--text));
   font-size: 0.875rem;
   line-height: 1.6;
 }

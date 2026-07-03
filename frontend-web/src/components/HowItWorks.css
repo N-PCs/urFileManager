@@ -69,11 +69,11 @@
 
 .workflow-canvas {
   position: relative;
-  aspect-ratio: 6 / 1;
+  aspect-ratio: 6 / 1.45;
   min-height: 180px;
   padding: 0;
-  background-color: #f8fafc;
-  background-image: radial-gradient(circle, #cbd5e1 1px, transparent 1px);
+  background-color: var(--bg);
+  background-image: radial-gradient(circle, var(--border-strong) 1px, transparent 1px);
   background-size: 18px 18px;
 }
 
@@ -149,7 +149,7 @@
   display: grid;
   place-items: center;
   flex-shrink: 0;
-  background: color-mix(in srgb, var(--node-accent) 14%, white);
+  background: color-mix(in srgb, var(--node-accent) 14%, transparent);
   color: var(--node-accent);
   transition: transform 0.35s ease, box-shadow 0.35s ease;
 }
@@ -223,13 +223,13 @@
 }
 
 .workflow-folder-before {
-  border-color: #fecaca;
-  background: #fff5f5;
+  border-color: color-mix(in srgb, #ef4444 30%, var(--border));
+  background: color-mix(in srgb, #ef4444 8%, var(--bg-white));
 }
 
 .workflow-folder-after {
-  border-color: #bbf7d0;
-  background: #f0fdf4;
+  border-color: color-mix(in srgb, #10b981 30%, var(--border));
+  background: color-mix(in srgb, #10b981 8%, var(--bg-white));
 }
 
 .workflow-preview-badge {
@@ -243,13 +243,13 @@
 }
 
 .workflow-preview-badge-before {
-  color: #b91c1c;
-  background: #fee2e2;
+  color: #ef4444;
+  background: color-mix(in srgb, #ef4444 15%, transparent);
 }
 
 .workflow-preview-badge-after {
-  color: #15803d;
-  background: #dcfce7;
+  color: #10b981;
+  background: color-mix(in srgb, #10b981 15%, transparent);
 }
 
 .workflow-folder-path {
@@ -283,8 +283,8 @@
   color: var(--text-secondary);
   padding: 2px 4px;
   border-radius: 4px;
-  background: rgba(255, 255, 255, 0.7);
-  border: 1px solid rgba(0, 0, 0, 0.04);
+  background: color-mix(in srgb, var(--bg) 70%, transparent);
+  border: 1px solid var(--border);
   transition: opacity 0.35s ease, background 0.35s ease, border-color 0.35s ease;
 }
 
@@ -308,8 +308,8 @@
 }
 
 .workflow-mini-lit {
-  border-color: #86efac !important;
-  background: #ecfdf5 !important;
+  border-color: #10b981 !important;
+  background: color-mix(in srgb, #10b981 12%, var(--bg-white)) !important;
 }
 
 .workflow-mini-lit svg {
@@ -360,7 +360,7 @@
 
 .workflow-chip-lit {
   border-color: var(--chip-color);
-  background: color-mix(in srgb, var(--chip-color) 12%, white);
+  background: color-mix(in srgb, var(--chip-color) 12%, transparent);
   color: var(--chip-color);
 }
 
@@ -516,7 +516,7 @@
 
 @media (max-width: 960px) {
   .workflow-canvas {
-    aspect-ratio: 4 / 1;
+    aspect-ratio: 4 / 1.45;
     min-height: 160px;
   }
 }
@@ -539,7 +539,7 @@
   }
 
   .workflow-canvas {
-    aspect-ratio: 3 / 1;
+    aspect-ratio: 3 / 1.45;
     min-height: 140px;
   }
 }
