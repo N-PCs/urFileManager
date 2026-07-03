@@ -39,6 +39,9 @@ A cross-platform, native C++ utility that organizes cluttered folders into categ
 └── release/                   # Release binaries
 ```
 
+## Workflow Diagram
+![workflow-diagram](workflow.png)
+
 ## Quick Start
 
 ### Windows
