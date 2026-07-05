@@ -583,7 +583,7 @@
   font-weight: 700;
   color: var(--bg);
   background: var(--primary);
-  border-radius: 50%;
+  border-radius: 10%;
   margin-bottom: 16px;
 }
 

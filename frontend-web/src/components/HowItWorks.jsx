@@ -263,7 +263,7 @@ export default function HowItWorks() {
         </div>
 
                 {/* Step cards */}
-        <div className="steps">
+        <div className="steps" >
           {steps.map((step) => (
             <div key={step.num} className="step card">
               <span className="step-num">{step.num}</span>

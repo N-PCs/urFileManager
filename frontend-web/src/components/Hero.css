@@ -1,24 +1,32 @@
 .hero {
-  padding: 120px 0 96px;
-  background: var(--bg);
   position: relative;
   overflow: hidden;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .hero-layout {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: center;
   gap: 32px;
   max-width: 720px;
   position: relative;
   z-index: 1;
+  text-align: center;
+  padding: 120px 16px 96px;
 }
 
 .hero-eyebrow {
-  font-size: 0.8125rem;
+  font-size: 1rem;
   font-weight: 600;
-  color: var(--secondary);
+  color: var(--bg-white);
+  background-color: var(--primary);
+  border-radius: var(--radius-lg);
+  width: 300px;
+  justify-self: center;
   margin-bottom: 16px;
   letter-spacing: 0.05em;
 }
@@ -43,8 +51,8 @@
   font-size: 1.0625rem;
   color: var(--text-secondary);
   line-height: 1.75;
-  max-width: 480px;
-  margin-bottom: 24px;
+  max-width: 600px;
+  margin: 0 auto 24px;
 }
 
 .hero-points {
@@ -79,6 +87,7 @@
   display: flex;
   flex-wrap: wrap;
   gap: 12px;
+  justify-content: center;
 }
 
 .btn-icon {
@@ -87,8 +96,8 @@
 }
 
 @media (max-width: 640px) {
-  .hero {
-    padding: 100px 0 64px;
+  .hero-layout {
+    padding: 100px 16px 64px;
   }
 
   .hero-title {

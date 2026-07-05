@@ -1,13 +1,17 @@
 import './Hero.css'
-import HeroBg from './HeroBg'
+import './HeroBg.css'
 
 export default function Hero() {
   return (
     <section id="home" className="hero">
-      <HeroBg />
+      <div className="hero-bg" aria-hidden="true">
+        <div className="hero-grid-flicker" />
+        <div className="hero-grid-glow" />
+        <div className="hero-grain" />
+      </div>
       <div className="container hero-layout">
         <div className="hero-copy">
-          <p className="hero-eyebrow " style={{ color: "var(--primary)", fontSize:"1.0rem"}}>Cross-platform file organizer</p>
+          <p className="hero-eyebrow">Cross-platform file organizer</p>
           <h1 className="hero-title">
             Turn a messy folder into an organized one!
           </h1>

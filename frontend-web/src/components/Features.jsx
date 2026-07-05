@@ -84,15 +84,15 @@ export default function Features() {
 
         <div className="features-grid">
           {features.map(({ Icon, title, description, tag }) => (
-            <article key={title} className="feature-card card">
-              <div className="feature-top">
-                <div className="icon-box">
+            <article key={title} className="feature-card card" style={{backgroundColor:"var(--primary)"}}>
+              <div className="feature-top" >
+                <div className="icon-box" style={{color: "white"}}>
                   <Icon />
                 </div>
                 <span className="feature-tag">{tag}</span>
               </div>
-              <h3 className="feature-title">{title}</h3>
-              <p className="feature-desc">{description}</p>
+              <h3 className="feature-title" style={{color:"var(--bg-white)"}}>{title}</h3>
+              <p className="feature-desc" style={{color:"var(--bg-white)"}}>{description}</p>
             </article>
           ))}
         </div>
