@@ -1,14 +1,10 @@
 import './Hero.css'
-import './HeroBg.css'
+import HeroBg from './HeroBg'
 
 export default function Hero() {
   return (
     <section id="home" className="hero">
-      <div className="hero-bg" aria-hidden="true">
-        <div className="hero-grid-flicker" />
-        <div className="hero-grid-glow" />
-        <div className="hero-grain" />
-      </div>
+      <HeroBg />
       <div className="container hero-layout">
         <div className="hero-copy">
           <p className="hero-eyebrow">Cross-platform file organizer</p>

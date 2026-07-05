@@ -6,46 +6,68 @@
   z-index: 0;
 }
 
-.hero-grid-flicker {
+.hero-bars {
   position: absolute;
-  inset: -50%;
-  width: 200%;
-  height: 200%;
-  background-image:
-    linear-gradient(var(--primary) 1px, transparent 1px),
-    linear-gradient(90deg, var(--primary) 1px, transparent 1px);
-  background-size: 60px 60px;
-  opacity: 0.04;
-  animation: gridFlicker 4s ease-in-out infinite;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 80vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  gap: 10px;
+  padding: 0 10%;
 }
 
-@keyframes gridFlicker {
-  0%, 100% { opacity: 0.03; }
-  10% { opacity: 0.06; }
-  12% { opacity: 0.02; }
-  30% { opacity: 0.05; }
-  32% { opacity: 0.03; }
-  60% { opacity: 0.06; }
-  62% { opacity: 0.02; }
-  80% { opacity: 0.05; }
-  82% { opacity: 0.04; }
+.bar {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  background: var(--primary);
+  opacity: 0.25;
+  transform-origin: bottom;
+  animation: barWave 2.4s ease-in-out infinite;
+  border-radius: 3px 3px 0 0;
 }
 
-.hero-grid-glow {
+.bar::after {
+  content: '';
   position: absolute;
-  inset: 0;
-  background: radial-gradient(
-    ellipse 60% 50% at 50% 50%,
-    color-mix(in srgb, var(--primary) 6%, transparent),
-    transparent 70%
-  );
-  animation: glowPulse 6s ease-in-out infinite alternate;
+  bottom: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  height: 40px;
+  background: var(--primary);
+  filter: blur(20px);
+  opacity: 0.3;
 }
 
-@keyframes glowPulse {
-  0% { opacity: 0.4; }
-  50% { opacity: 0.8; }
-  100% { opacity: 0.5; }
+.bar-1  { animation-delay: 0.00s; }
+.bar-2  { animation-delay: 0.18s; }
+.bar-3  { animation-delay: 0.36s; }
+.bar-4  { animation-delay: 0.54s; }
+.bar-5  { animation-delay: 0.72s; }
+.bar-6  { animation-delay: 0.90s; }
+.bar-7  { animation-delay: 1.08s; }
+.bar-8  { animation-delay: 1.26s; }
+.bar-9  { animation-delay: 1.44s; }
+.bar-10 { animation-delay: 1.62s; }
+.bar-11 { animation-delay: 1.80s; }
+
+@keyframes barWave {
+  0%   { transform: scaleY(0.05); }
+  15%  { transform: scaleY(0.55); }
+  30%  { transform: scaleY(0.15); }
+  50%  { transform: scaleY(0.95); }
+  70%  { transform: scaleY(0.25); }
+  85%  { transform: scaleY(0.7); }
+  100% { transform: scaleY(0.05); }
+}
+
+.hero-mobile-bg {
+  display: none;
 }
 
 .hero-grain {
@@ -54,4 +76,73 @@
   opacity: 0.025;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   background-size: 128px 128px;
+}
+
+@media (max-width: 640px) {
+  .hero-bars {
+    display: none;
+  }
+
+  .hero-mobile-bg {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .pulse-ring {
+    position: absolute;
+    border-radius: 50%;
+    border: 1px solid var(--primary);
+    opacity: 0;
+    animation: ringPulse 4s ease-in-out infinite;
+  }
+
+  .ring-1 {
+    width: 200px;
+    height: 200px;
+    animation-delay: 0s;
+  }
+
+  .ring-2 {
+    width: 350px;
+    height: 350px;
+    animation-delay: 0.8s;
+  }
+
+  .ring-3 {
+    width: 500px;
+    height: 500px;
+    animation-delay: 1.6s;
+  }
+
+  @keyframes ringPulse {
+    0%   { transform: scale(0.6); opacity: 0; }
+    20%  { opacity: 0.25; }
+    50%  { transform: scale(1); opacity: 0.15; }
+    100% { transform: scale(1.4); opacity: 0; }
+  }
+
+  .pulse-dot {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background: var(--primary);
+    border-radius: 50%;
+    opacity: 0;
+    animation: dotPulse 3s ease-in-out infinite;
+  }
+
+  .dot-1 { top: 20%; left: 15%; animation-delay: 0.0s; }
+  .dot-2 { top: 35%; right: 20%; animation-delay: 0.5s; }
+  .dot-3 { bottom: 30%; left: 25%; animation-delay: 1.0s; }
+  .dot-4 { bottom: 20%; right: 15%; animation-delay: 1.5s; }
+  .dot-5 { top: 50%; left: 10%; animation-delay: 2.0s; }
+  .dot-6 { top: 45%; right: 10%; animation-delay: 2.5s; }
+
+  @keyframes dotPulse {
+    0%, 100% { opacity: 0; transform: scale(0.5); }
+    50%      { opacity: 0.35; transform: scale(1); }
+  }
 }
