@@ -195,7 +195,7 @@ std::wstring Browse(HWND h) {
 int WINAPI WinMain(HINSTANCE hInst, HINSTANCE, LPSTR, int nShow) {
     LPWSTR* args; int n; args = CommandLineToArgvW(GetCommandLineW(), &n);
     bool cli = false; std::wstring dir; bool dry = false;
-    if (args && n > 1) { cli = true; for (int i=1; i<n; i++) { std::wstring a=args[i]; if (a==L"--dry-run") dry=true; else if (dir.empty()&&a[0]!=L'-') dir=a; } LocalFree(args); }
+    if (args && n > 1) { cli = true; for (int i=1; i<n; i++) { std::wstring a=args[i]; if (a==L"--dry-run") dry=true; else if (a==L"--no-dry-run") dry=false; else if (dir.empty()&&a[0]!=L'-') dir=a; } LocalFree(args); }
     if (cli) {
         if (!AttachConsole(ATTACH_PARENT_PROCESS)) AllocConsole();
         FILE* f; freopen_s(&f, "CONOUT$", "w", stdout); freopen_s(&f, "CONOUT$", "w", stderr); freopen_s(&f, "CONIN$", "r", stdin);
@@ -256,7 +256,7 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE, LPSTR, int nShow) {
     wc.hCursor = LoadCursor(NULL, IDC_ARROW); wc.hIcon = LoadIcon(hInst, MAKEINTRESOURCE(1));
     RegisterClassW(&wc);
 
-    RECT rc = {0,0,SX(740),SY(580)}; AdjustWindowRect(&rc, WS_OVERLAPPED|WS_CAPTION|WS_SYSMENU|WS_MINIMIZEBOX, FALSE);
+    RECT rc = {0,0,SX(780),SY(620)}; AdjustWindowRect(&rc, WS_OVERLAPPED|WS_CAPTION|WS_SYSMENU|WS_MINIMIZEBOX, FALSE);
     g_hMain = CreateWindowExW(0, L"UrFmWinGUI", L"urFileManager",
         WS_OVERLAPPED|WS_CAPTION|WS_SYSMENU|WS_MINIMIZEBOX, CW_USEDEFAULT, CW_USEDEFAULT,
         rc.right-rc.left, rc.bottom-rc.top, NULL, NULL, hInst, NULL);
@@ -273,65 +273,66 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
     switch (msg) {
     case WM_CREATE: {
         int dpi = GetWindowDPI(hWnd); g_dpi = (double)dpi / 96.0;
-        g_fTitle = CreateFontW(-SY(26),0,0,0,FW_BOLD,0,0,0,DEFAULT_CHARSET,0,0,0,0,L"Segoe UI");
-        g_fSub = CreateFontW(-SY(13),0,0,0,FW_NORMAL,0,0,0,DEFAULT_CHARSET,0,0,0,0,L"Segoe UI");
+        g_fTitle = CreateFontW(-SY(28),0,0,0,FW_BOLD,0,0,0,DEFAULT_CHARSET,0,0,0,0,L"Segoe UI");
+        g_fSub = CreateFontW(-SY(12),0,0,0,FW_NORMAL,0,0,0,DEFAULT_CHARSET,0,0,0,0,L"Segoe UI");
         g_fNormal = CreateFontW(-SY(14),0,0,0,FW_NORMAL,0,0,0,DEFAULT_CHARSET,0,0,0,0,L"Segoe UI");
         g_fBold = CreateFontW(-SY(14),0,0,0,FW_BOLD,0,0,0,DEFAULT_CHARSET,0,0,0,0,L"Segoe UI");
-        g_fLog = CreateFontW(-SY(13),0,0,0,FW_NORMAL,0,0,0,DEFAULT_CHARSET,0,0,0,FIXED_PITCH,L"Consolas");
+        g_fLog = CreateFontW(-SY(12),0,0,0,FW_NORMAL,0,0,0,DEFAULT_CHARSET,0,0,0,FIXED_PITCH,L"Consolas");
         UpdateBrushes();
+
+        int bx = 35;
 
         // Path edit
         g_hPath = CreateWindowExW(0, L"EDIT", L"", ES_AUTOHSCROLL|WS_CHILD|WS_VISIBLE|ES_LEFT,
-            SX(45),SY(120),SX(530),SY(18), hWnd, (HMENU)IDC_PATH_EDIT, GetModuleHandle(NULL), NULL);
+            SX(45),SY(122),SX(528),SY(20), hWnd, (HMENU)IDC_PATH_EDIT, GetModuleHandle(NULL), NULL);
         SendMessage(g_hPath, WM_SETFONT, (WPARAM)g_fNormal, TRUE);
         SetWindowSubclass(g_hPath, EditSubclass, 0, 0);
 
         // Browse button
         g_hBrowse = CreateWindowExW(0, L"BUTTON", L"Browse",
-            WS_CHILD|WS_VISIBLE, SX(590),SY(115),SX(110),SY(28), hWnd, (HMENU)IDC_BROWSE_BTN, GetModuleHandle(NULL), NULL);
+            WS_CHILD|WS_VISIBLE, SX(585),SY(116),SX(110),SY(32), hWnd, (HMENU)IDC_BROWSE_BTN, GetModuleHandle(NULL), NULL);
         SendMessage(g_hBrowse, WM_SETFONT, (WPARAM)g_fBold, TRUE);
         SetWindowSubclass(g_hBrowse, BtnSubclass, IDC_BROWSE_BTN, 0);
 
         // Dry-run checkbox
         g_hDryRun = CreateWindowExW(0, L"BUTTON", L" Dry Run (Preview only - uncheck to execute)",
-            WS_CHILD|WS_VISIBLE|BS_AUTOCHECKBOX, SX(35),SY(160),SX(660),SY(20), hWnd, (HMENU)IDC_DRY_RUN_CHECK, GetModuleHandle(NULL), NULL);
+            WS_CHILD|WS_VISIBLE|BS_AUTOCHECKBOX, SX(35),SY(162),SX(700),SY(22), hWnd, (HMENU)IDC_DRY_RUN_CHECK, GetModuleHandle(NULL), NULL);
         SendMessage(g_hDryRun, WM_SETFONT, (WPARAM)g_fNormal, TRUE);
         SendMessage(g_hDryRun, BM_SETCHECK, BST_CHECKED, 0);
 
         // Action buttons row
-        int bx = 35;
         g_hCfg = CreateWindowExW(0, L"BUTTON", L"Edit Config",
-            WS_CHILD|WS_VISIBLE, SX(bx),SY(195),SX(120),SY(30), hWnd, (HMENU)IDC_EDIT_CONFIG_BTN, GetModuleHandle(NULL), NULL);
+            WS_CHILD|WS_VISIBLE, SX(bx),SY(200),SX(120),SY(32), hWnd, (HMENU)IDC_EDIT_CONFIG_BTN, GetModuleHandle(NULL), NULL);
         SendMessage(g_hCfg, WM_SETFONT, (WPARAM)g_fBold, TRUE);
         SetWindowSubclass(g_hCfg, BtnSubclass, IDC_EDIT_CONFIG_BTN, 0);
 
         g_hLogBtn = CreateWindowExW(0, L"BUTTON", L"View Log",
-            WS_CHILD|WS_VISIBLE, SX(bx+135),SY(195),SX(120),SY(30), hWnd, (HMENU)IDC_VIEW_LOG_BTN, GetModuleHandle(NULL), NULL);
+            WS_CHILD|WS_VISIBLE, SX(bx+132),SY(200),SX(120),SY(32), hWnd, (HMENU)IDC_VIEW_LOG_BTN, GetModuleHandle(NULL), NULL);
         SendMessage(g_hLogBtn, WM_SETFONT, (WPARAM)g_fBold, TRUE);
         SetWindowSubclass(g_hLogBtn, BtnSubclass, IDC_VIEW_LOG_BTN, 0);
 
         g_hReport = CreateWindowExW(0, L"BUTTON", L"View Report",
-            WS_CHILD|WS_VISIBLE, SX(bx+270),SY(195),SX(120),SY(30), hWnd, (HMENU)IDC_VIEW_REPORT_BTN, GetModuleHandle(NULL), NULL);
+            WS_CHILD|WS_VISIBLE, SX(bx+264),SY(200),SX(120),SY(32), hWnd, (HMENU)IDC_VIEW_REPORT_BTN, GetModuleHandle(NULL), NULL);
         SendMessage(g_hReport, WM_SETFONT, (WPARAM)g_fBold, TRUE);
         SetWindowSubclass(g_hReport, BtnSubclass, IDC_VIEW_REPORT_BTN, 0);
         ShowWindow(g_hReport, SW_HIDE);
 
         // Theme combo
         g_hTheme = CreateWindowExW(0, L"COMBOBOX", L"",
-            WS_CHILD|WS_VISIBLE|CBS_DROPDOWNLIST|WS_VSCROLL, SX(505),SY(193),SX(190),SY(150), hWnd, (HMENU)IDC_THEME_COMBO, GetModuleHandle(NULL), NULL);
+            WS_CHILD|WS_VISIBLE|CBS_DROPDOWNLIST|WS_VSCROLL, SX(520),SY(203),SX(220),SY(150), hWnd, (HMENU)IDC_THEME_COMBO, GetModuleHandle(NULL), NULL);
         SendMessage(g_hTheme, WM_SETFONT, (WPARAM)g_fNormal, TRUE);
         for (const auto& t : g_themes) SendMessage(g_hTheme, CB_ADDSTRING, 0, (LPARAM)t.name.c_str());
         SendMessage(g_hTheme, CB_SETCURSEL, g_themeIdx, 0);
 
         // Start button
         g_hAction = CreateWindowExW(0, L"BUTTON", L"Start Organizing",
-            WS_CHILD|WS_VISIBLE, SX(35),SY(245),SX(200),SY(38), hWnd, (HMENU)IDC_ACTION_BTN, GetModuleHandle(NULL), NULL);
+            WS_CHILD|WS_VISIBLE, SX(35),SY(248),SX(220),SY(40), hWnd, (HMENU)IDC_ACTION_BTN, GetModuleHandle(NULL), NULL);
         SendMessage(g_hAction, WM_SETFONT, (WPARAM)g_fBold, TRUE);
         SetWindowSubclass(g_hAction, BtnSubclass, IDC_ACTION_BTN, 1);
 
         // Undo button
         g_hUndo = CreateWindowExW(0, L"BUTTON", L"Undo Last Organize",
-            WS_CHILD|WS_VISIBLE, SX(250),SY(245),SX(200),SY(38), hWnd, (HMENU)IDC_UNDO_BTN, GetModuleHandle(NULL), NULL);
+            WS_CHILD|WS_VISIBLE, SX(268),SY(248),SX(220),SY(40), hWnd, (HMENU)IDC_UNDO_BTN, GetModuleHandle(NULL), NULL);
         SendMessage(g_hUndo, WM_SETFONT, (WPARAM)g_fBold, TRUE);
         SetWindowSubclass(g_hUndo, BtnSubclass, IDC_UNDO_BTN, 2);
         EnableWindow(g_hUndo, FALSE);
@@ -339,7 +340,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
         // Log console
         g_hLog = CreateWindowExW(WS_EX_CLIENTEDGE, L"EDIT", L"",
             WS_CHILD|WS_VISIBLE|WS_VSCROLL|ES_MULTILINE|ES_AUTOVSCROLL|ES_READONLY,
-            SX(35),SY(350),SX(670),SY(190), hWnd, (HMENU)IDC_LOG_CONSOLE, GetModuleHandle(NULL), NULL);
+            SX(35),SY(360),SX(710),SY(215), hWnd, (HMENU)IDC_LOG_CONSOLE, GetModuleHandle(NULL), NULL);
         SendMessage(g_hLog, WM_SETFONT, (WPARAM)g_fLog, TRUE);
         SendMessage(g_hLog, EM_SETMARGINS, EC_LEFTMARGIN|EC_RIGHTMARGIN, MAKELPARAM(6,6));
 
@@ -567,7 +568,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
     }
     case WM_APP_PROGRESS: {
         g_processed = (size_t)wParam; g_total = (size_t)lParam;
-        RECT r = {SX(35),SY(290),SX(705),SY(300)}; InvalidateRect(hWnd, &r, FALSE); break;
+        RECT r = {SX(35),SY(300),SX(730),SY(320)}; InvalidateRect(hWnd, &r, FALSE); break;
     }
     case WM_APP_STATUS: {
         std::wstring* s = (std::wstring*)lParam; if (s) { g_status=*s; delete s; RECT r={SX(250),SY(250),SX(700),SY(280)}; InvalidateRect(hWnd,&r,FALSE); } break;
@@ -601,8 +602,41 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
         const auto& t = g_themes[g_themeIdx];
         FillRect(mdc, &rc, g_bWindow);
 
-        // Glassmorphic card panel (semi-transparent)
-        RECT cardRc = {SX(20), SY(80), SX(720), SY(260)};
+        // === Material App Bar ===
+        RECT appBar = {0, 0, w, SY(70)};
+        HBRUSH hAppBar = CreateSolidBrush(t.accent);
+        FillRect(mdc, &appBar, hAppBar); DeleteObject(hAppBar);
+        // App bar bottom shadow
+        for (int i = 0; i < 4; i++) {
+            int alpha = 5 - i;
+            RECT sh = {0, SY(70)+i, w, SY(70)+i+1};
+            HBRUSH hs = CreateSolidBrush(RGB(0,0,0));
+            FillRect(mdc, &sh, hs); DeleteObject(hs);
+        }
+        // Title in app bar
+        SetBkMode(mdc, TRANSPARENT);
+        SetTextColor(mdc, RGB(255,255,255)); SelectObject(mdc, g_fTitle);
+        TextOutW(mdc, SX(24), SY(16), L"urFM", 4);
+        SetTextColor(mdc, RGB(255,255,255)); SelectObject(mdc, g_fSub);
+        TextOutW(mdc, SX(102), SY(26), L"urFileManager", 13);
+        // Sub header in app bar
+        SetTextColor(mdc, RGB(255,255,255)); SelectObject(mdc, g_fSub);
+        TextOutW(mdc, SX(24), SY(48), L"Organize files into categorized folders", 40);
+
+        // === Material Card with shadow ===
+        // Shadow layers (bottom-right offset)
+        for (int i = 1; i <= 4; i++) {
+            RECT shRc = {SX(20)+i, SY(80)+i, SX(745)+i, SY(305)+i};
+            HBRUSH hSh = CreateSolidBrush(RGB(
+                (GetRValue(t.windowBg)*3)/4, (GetGValue(t.windowBg)*3)/4, (GetBValue(t.windowBg)*3)/4));
+            HPEN hShPen = CreatePen(PS_NULL, 0, 0);
+            auto obSh = SelectObject(mdc, hSh); auto opSh = SelectObject(mdc, hShPen);
+            RoundRect(mdc, shRc.left, shRc.top, shRc.right, shRc.bottom, SX(12), SX(12));
+            SelectObject(mdc, obSh); SelectObject(mdc, opSh);
+            DeleteObject(hSh); DeleteObject(hShPen);
+        }
+        // Card background
+        RECT cardRc = {SX(20), SY(80), SX(745), SY(305)};
         HBRUSH hCard = CreateSolidBrush(RGB(
             GetRValue(t.cardBg), GetGValue(t.cardBg), GetBValue(t.cardBg)));
         HPEN hPen = CreatePen(PS_SOLID, 1, t.eNorm);
@@ -610,57 +644,59 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
         RoundRect(mdc, cardRc.left, cardRc.top, cardRc.right, cardRc.bottom, SX(12), SX(12));
         SelectObject(mdc, ob2); SelectObject(mdc, op2); DeleteObject(hPen); DeleteObject(hCard);
 
-        // Title
-        SetBkMode(mdc, TRANSPARENT);
-        SetTextColor(mdc, t.textTitle); SelectObject(mdc, g_fTitle);
-        TextOutW(mdc, SX(22), SY(18), L"urFM", 4);
-        SetTextColor(mdc, t.accent); SelectObject(mdc, g_fSub);
-        TextOutW(mdc, SX(98), SY(26), L"urFileManager", 19);
-
-        // Sub header
-        SetTextColor(mdc, t.textSub); SelectObject(mdc, g_fSub);
-        TextOutW(mdc, SX(22), SY(55), L"Organize loose files into categorized folders in seconds.", 58);
-
         // Field labels
         SetTextColor(mdc, t.textNormal); SelectObject(mdc, g_fBold);
-        TextOutW(mdc, SX(35), SY(92), L"Target Directory", 16);
+        TextOutW(mdc, SX(35), SY(96), L"Target Directory", 16);
 
-        // Edit box border (glassmorphic)
-        bool eHov = GetPropW(g_hPath, L"hovering") != NULL;
+        // Edit box border (Material underline style)
+        bool eHov = GetPropW(g_hPath, L"hov") != NULL;
         bool eFoc = GetFocus() == g_hPath;
-        HPEN hEp = CreatePen(PS_SOLID, 1, eFoc ? t.eFocus : (eHov ? t.eHover : t.eNorm));
-        RECT er = {SX(35), SY(115), SX(575), SY(143)};
+        HPEN hEp = CreatePen(PS_SOLID, eFoc ? 2 : 1, eFoc ? t.eFocus : (eHov ? t.eHover : t.eNorm));
+        RECT er = {SX(35), SY(114), SX(575), SY(144)};
         auto op3 = SelectObject(mdc, g_bEdit); auto op4 = SelectObject(mdc, hEp);
-        RoundRect(mdc, er.left, er.top, er.right, er.bottom, SX(8), SX(8));
+        RoundRect(mdc, er.left, er.top, er.right, er.bottom, SX(6), SX(6));
         SelectObject(mdc, op3); SelectObject(mdc, op4); DeleteObject(hEp);
+        // Bottom accent line for edit box when focused
+        if (eFoc) {
+            HPEN hAc = CreatePen(PS_SOLID, 2, t.accent);
+            auto opAc = SelectObject(mdc, hAc);
+            MoveToEx(mdc, SX(37), SY(141), NULL); LineTo(mdc, SX(573), SY(141));
+            SelectObject(mdc, opAc); DeleteObject(hAc);
+        }
 
-        // Theme label
+        // Theme label — aligned next to combo
         SetTextColor(mdc, t.textNormal); SelectObject(mdc, g_fBold);
-        TextOutW(mdc, SX(470), SY(198), L"Theme:", 6);
+        TextOutW(mdc, SX(465), SY(209), L"Theme", 5);
 
-        // Status
-        SetTextColor(mdc, t.textNormal); SelectObject(mdc, g_fSub);
-        TextOutW(mdc, SX(460), SY(255), g_status.c_str(), (int)g_status.length());
+        // Status text
+        SetTextColor(mdc, t.textSub); SelectObject(mdc, g_fSub);
+        std::wstring st = g_status;
+        if (g_total > 0 && !g_running) {
+            st = L"Processed " + std::to_wstring(g_processed) + L" / " + std::to_wstring(g_total) + L" files";
+        }
+        TextOutW(mdc, SX(460), SY(260), st.c_str(), (int)st.length());
 
-        // Progress bar (glassmorphic)
-        RECT pb = {SX(35), SY(300), SX(705), SY(310)};
+        // === Material Progress Bar ===
+        RECT pb = {SX(35), SY(308), SX(730), SY(316)};
         HBRUSH hp = CreateSolidBrush(t.editBg);
         FillRect(mdc, &pb, hp); DeleteObject(hp);
         if (g_total > 0) {
             double pct = (double)g_processed / g_total;
             int fw = (int)((pb.right-pb.left) * pct);
-            if (fw > 0) { RECT pf = {pb.left, pb.top, pb.left+fw, pb.bottom};
-                HBRUSH hf = CreateSolidBrush(t.accent); FillRect(mdc, &pf, hf); DeleteObject(hf); }
+            if (fw > 0) {
+                RECT pf = {pb.left, pb.top, pb.left+fw, pb.bottom};
+                HBRUSH hf = CreateSolidBrush(t.accent); FillRect(mdc, &pf, hf); DeleteObject(hf);
+            }
         }
 
         // Console label
         SetTextColor(mdc, t.textNormal); SelectObject(mdc, g_fBold);
-        TextOutW(mdc, SX(35), SY(330), L"Live Log", 8);
+        TextOutW(mdc, SX(35), SY(332), L"Live Log", 8);
 
         // Separator line
         HPEN hSp = CreatePen(PS_SOLID, 1, t.eNorm);
         auto op5 = SelectObject(mdc, hSp);
-        MoveToEx(mdc, SX(35), SY(345), NULL); LineTo(mdc, SX(705), SY(345));
+        MoveToEx(mdc, SX(35), SY(350), NULL); LineTo(mdc, SX(745), SY(350));
         SelectObject(mdc, op5); DeleteObject(hSp);
 
         BitBlt(hdc, 0, 0, w, h, mdc, 0, 0, SRCCOPY);
@@ -722,7 +758,7 @@ LRESULT CALLBACK BtnSubclass(HWND h, UINT msg, WPARAM w, LPARAM l, UINT_PTR, DWO
         }
         HBRUSH hb = CreateSolidBrush(bg); HPEN hp = CreatePen(PS_SOLID, 1, bd);
         auto ob1 = SelectObject(mdc, hb); auto op1 = SelectObject(mdc, hp);
-        RoundRect(mdc, 0, 0, cw, ch, SX(8), SX(8));
+        RoundRect(mdc, 0, 0, cw, ch, SX(10), SX(10));
         SelectObject(mdc, ob1); SelectObject(mdc, op1); DeleteObject(hb); DeleteObject(hp);
         SetBkMode(mdc, TRANSPARENT); SetTextColor(mdc, tx);
         int len = GetWindowTextLengthW(h); std::wstring txt(len+1,0); GetWindowTextW(h, txt.data(), len+1);
@@ -741,14 +777,14 @@ LRESULT CALLBACK EditSubclass(HWND h, UINT msg, WPARAM w, LPARAM l, UINT_PTR, DW
     switch (msg) {
     case WM_DESTROY: RemovePropW(h, L"hov"); break;
     case WM_MOUSEMOVE:
-        if (!GetPropW(h, L"hov")) { SetPropW(h, L"hov", (HANDLE)TRUE); TRACKMOUSEEVENT t={sizeof(t),TME_LEAVE,h,0}; TrackMouseEvent(&t); RECT r={SX(35),SY(115),SX(575),SY(143)}; InvalidateRect(GetParent(h),&r,FALSE); }
+        if (!GetPropW(h, L"hov")) { SetPropW(h, L"hov", (HANDLE)TRUE); TRACKMOUSEEVENT t={sizeof(t),TME_LEAVE,h,0}; TrackMouseEvent(&t); RECT r={SX(35),SY(114),SX(575),SY(144)}; InvalidateRect(GetParent(h),&r,FALSE); }
         break;
     case WM_MOUSELEAVE: {
-        SetPropW(h, L"hov", (HANDLE)FALSE); RECT r={SX(35),SY(115),SX(575),SY(143)}; InvalidateRect(GetParent(h),&r,FALSE); break;
+        SetPropW(h, L"hov", (HANDLE)FALSE); RECT r={SX(35),SY(114),SX(575),SY(144)}; InvalidateRect(GetParent(h),&r,FALSE); break;
     }
     case WM_SETFOCUS:
     case WM_KILLFOCUS: {
-        RECT r={SX(35),SY(115),SX(575),SY(143)}; InvalidateRect(GetParent(h),&r,FALSE); break;
+        RECT r={SX(35),SY(114),SX(575),SY(144)}; InvalidateRect(GetParent(h),&r,FALSE); break;
     }
     }
     return DefSubclassProc(h, msg, w, l);

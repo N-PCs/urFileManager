@@ -229,6 +229,7 @@ int main(int argc, char** argv) {
         for (int i = 1; i < argc; i++) {
             std::string arg = argv[i];
             if (arg == "--dry-run") dry = true;
+            else if (arg == "--no-dry-run") dry = false;
             else if (arg[0] != '-') dir = arg;
         }
 

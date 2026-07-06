@@ -18,7 +18,7 @@ macOS
 Options
 -------
   --dry-run    Preview moves without changing files (default in GUI)
-  --no-dry-run Apply moves immediately
+               (Omit the flag to apply moves immediately)
 
 Files
 -----

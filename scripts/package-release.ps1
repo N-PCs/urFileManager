@@ -30,7 +30,7 @@ foreach ($f in @("ufmgr.exe", "run.bat", "ufmgr.bat")) {
     Copy-Item (Join-Path $DesktopDir $f) $WinStage
 }
 Copy-Item $ConfigFile $WinStage
-Copy-Item (Join-Path $DesktopDir "RELEASE_README.txt") (Join-Path $WinStage "README.txt")
+Copy-Item (Join-Path $DesktopDir "RELEASE_README.md") (Join-Path $WinStage "README.txt")
 
 $WinZip = Join-Path $PublicDir "urfm-windows.zip"
 if (Test-Path $WinZip) { Remove-Item $WinZip -Force }
@@ -47,7 +47,7 @@ foreach ($f in @("core.cpp", "core.h", "gui_fltk.cpp", "build.sh")) {
     Copy-Item (Join-Path $DesktopDir $f) $LinuxStage
 }
 Copy-Item $ConfigFile $LinuxStage
-Copy-Item (Join-Path $DesktopDir "RELEASE_README.txt") (Join-Path $LinuxStage "README.txt")
+Copy-Item (Join-Path $DesktopDir "RELEASE_README.md") (Join-Path $LinuxStage "README.txt")
 
 $LinuxTar = Join-Path $PublicDir "urfm-linux.tar.gz"
 Push-Location $LinuxStage

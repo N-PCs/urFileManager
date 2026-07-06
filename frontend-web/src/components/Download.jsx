@@ -130,7 +130,7 @@ export default function Download() {
                   <a
                     href={href}
                     download={platform.zipName}
-                    className="btn btn-primary btn-lg download-btn" style={{color:"black"}}
+                    className="btn btn-primary btn-lg download-btn"
                     onClick={() => setSelectedPlatform(platform.id)}
                   >
                     <IconDownload className="btn-icon" />

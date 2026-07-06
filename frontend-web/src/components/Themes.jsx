@@ -29,6 +29,7 @@ const themes = [
       '--accent': '#9fa8da',
       '--accent-bg': '#eef2ff',
       '--accent-soft': '#e0e7ff',
+      '--btn-text': '#ffffff',
     },
   },
   {
@@ -49,6 +50,7 @@ const themes = [
       '--accent': '#818cf8',
       '--accent-bg': '#1e1b4b',
       '--accent-soft': '#1e293b',
+      '--btn-text': '#ffffff',
     },
   },
   {
@@ -69,6 +71,7 @@ const themes = [
       '--accent': '#ffb7c5',
       '--accent-bg': '#fff0f3',
       '--accent-soft': '#ffe0ea',
+      '--btn-text': '#ffffff',
     },
   },
   {
@@ -89,6 +92,7 @@ const themes = [
       '--accent': '#047857',
       '--accent-bg': '#022c22',
       '--accent-soft': '#064e3b',
+      '--btn-text': '#ffffff',
     },
   },
   {
@@ -109,6 +113,7 @@ const themes = [
       '--accent': '#a78bfa',
       '--accent-bg': '#2e1065',
       '--accent-soft': '#3b0764',
+      '--btn-text': '#ffffff',
     },
   },
   {
@@ -129,6 +134,7 @@ const themes = [
       '--accent': '#e8ff6b',
       '--accent-bg': '#1c1d15',
       '--accent-soft': '#282a1a',
+      '--btn-text': '#000000',
     },
   },
 ]

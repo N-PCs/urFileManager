@@ -3,14 +3,14 @@
                   {
                       "platform":  "windows",
                       "name":  "urfm-windows.zip",
-                      "size":  357839
+                      "size":  402469
                   },
                   {
                       "platform":  "linux",
                       "name":  "urfm-linux.tar.gz",
-                      "size":  8356
+                      "size":  8278
                   }
               ],
-    "generated":  "2026-07-05T00:00:00Z",
+    "generated":  "2026-07-06T23:53:55Z",
     "version":  "1.0.0"
 }

@@ -16,7 +16,8 @@
   --secondary: #fbfbfb;     /* High-contrast crisp white for secondary buttons */
   --secondary-rgb: 251, 251, 251;
   --accent-bg: #1c1d15;     /* Ultra-subtle yellow/green background tint */
-  --accent-soft: #282a1a;   
+  --accent-soft: #282a1a;
+  --btn-text: #000000;   
   
   /* Status & Utilities */
   --success: #10b981;       
@@ -164,7 +165,7 @@ img {
 
 .btn-primary {
   background: var(--primary);
-  color: #fff;
+  color: var(--btn-text, #fff);
 }
 
 .btn-primary:hover {
