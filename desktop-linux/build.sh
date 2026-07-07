@@ -63,7 +63,7 @@ cat > urfm << 'LAUNCHER'
 # urfm — urFileManager launcher
 DIR="$(cd "$(dirname "$0")" && pwd)"
 JAVA=""
-for candidate in java /usr/lib/jvm/java-17-openjdk/bin/java /usr/lib/jvm/java-11-openjdk/bin/java /usr/lib/jvm/java-21-openjdk/bin/java; do
+for candidate in java /usr/lib/jvm/java-17-openjdk/bin/java /usr/lib/jvm/java-21-openjdk/bin/java /usr/lib/jvm/java-11-openjdk/bin/java; do
     if command -v "$candidate" &>/dev/null; then
         JAVA="$candidate"
         break

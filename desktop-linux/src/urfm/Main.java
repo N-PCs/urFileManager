@@ -15,6 +15,7 @@ public class Main {
         boolean dryRun = false;
         boolean revert = false;
         boolean showVersion = false;
+        boolean guiMode = false;
         String dirArg = null;
 
         for (String arg : args) {
@@ -24,6 +25,8 @@ public class Main {
                 revert = true;
             } else if ("--version".equals(arg)) {
                 showVersion = true;
+            } else if ("--gui".equals(arg)) {
+                guiMode = true;
             } else if (arg.startsWith("-")) {
                 printUsage();
                 System.exit(1);
@@ -40,8 +43,8 @@ public class Main {
         // Determine Config Path
         Path configPath = getConfigPath();
 
-        // 1. CLI Mode
-        if (dirArg != null) {
+        // 1. CLI Mode (skip if --gui was passed)
+        if (dirArg != null && !guiMode) {
             Path targetDir = Path.of(dirArg);
             if (!Files.exists(targetDir) || !Files.isDirectory(targetDir)) {
                 System.err.println("[ERROR] The path '" + dirArg + "' is not a valid directory.");
@@ -120,6 +123,7 @@ public class Main {
         System.out.println("  --dry-run    Preview moves without modifying file system (CLI)");
         System.out.println("  --revert     Undo the last organization on the target directory");
         System.out.println("  --version    Show version info");
+        System.out.println("  --gui        Force launch the Swing GUI");
         System.out.println("  (no args)    Launches the Swing GUI");
     }
 }

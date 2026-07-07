@@ -220,14 +220,17 @@ def main():
     launcher = b'''#!/usr/bin/env bash
 # urfm - urFileManager launcher
 JAVA=""
-for candidate in java /usr/lib/jvm/java-17-openjdk/bin/java /usr/lib/jvm/java-21-openjdk/bin/java; do
+for candidate in java /usr/lib/jvm/java-17-openjdk/bin/java /usr/lib/jvm/java-21-openjdk/bin/java /usr/lib/jvm/java-11-openjdk/bin/java; do
     if command -v "$candidate" &>/dev/null; then
         JAVA="$candidate"
         break
     fi
 done
 if [ -z "$JAVA" ]; then
-    echo "Error: Java 17+ not found. Please install java-17-openjdk." >&2
+    echo "Error: Java 17+ not found. Install with:"
+    echo "  Fedora: sudo dnf install java-17-openjdk"
+    echo "  Ubuntu: sudo apt install openjdk-17-jre"
+    echo "  Arch:   sudo pacman -S jre17-openjdk"
     exit 1
 fi
 exec "$JAVA" -jar /opt/urfm/urfm.jar "$@"
@@ -317,7 +320,7 @@ exec "$JAVA" -jar /opt/urfm/urfm.jar "$@"
         (RPMTAG_FILEINODES, RPM_INT32, list(range(1, len(files) + 1))),
         (RPMTAG_FILELANGS, RPM_STRING_ARRAY, [""] * len(files)),
         (RPMTAG_FILEDEVICES, RPM_INT32, [1] * len(files)),
-        (RPMTAG_REQUIRENAME, RPM_STRING_ARRAY, ["java-17-openjdk-headless"]),
+        (RPMTAG_REQUIRENAME, RPM_STRING_ARRAY, ["java-headless"]),
         (RPMTAG_REQUIREVERSION, RPM_STRING_ARRAY, [""]),
         (RPMTAG_REQUIREFLAGS, RPM_INT32, [0]),
         (RPMTAG_PROVIDENAME, RPM_STRING_ARRAY, ["urfm"]),

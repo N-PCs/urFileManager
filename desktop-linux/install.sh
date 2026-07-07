@@ -31,6 +31,8 @@ if command -v java &>/dev/null; then
     JAVA="java"
 elif [ -f /usr/lib/jvm/java-17-openjdk/bin/java ]; then
     JAVA="/usr/lib/jvm/java-17-openjdk/bin/java"
+elif [ -f /usr/lib/jvm/java-21-openjdk/bin/java ]; then
+    JAVA="/usr/lib/jvm/java-21-openjdk/bin/java"
 elif [ -f /usr/lib/jvm/java-11-openjdk/bin/java ]; then
     JAVA="/usr/lib/jvm/java-11-openjdk/bin/java"
 else
@@ -71,7 +73,7 @@ cat > "$BIN_PATH" << 'LAUNCHER'
 # urfm — urFileManager launcher
 # Tries to find Java and launch the GUI (or CLI if arguments are given)
 JAVA=""
-for candidate in java /usr/lib/jvm/java-17-openjdk/bin/java /usr/lib/jvm/java-11-openjdk/bin/java /usr/lib/jvm/java-21-openjdk/bin/java; do
+for candidate in java /usr/lib/jvm/java-17-openjdk/bin/java /usr/lib/jvm/java-21-openjdk/bin/java /usr/lib/jvm/java-11-openjdk/bin/java; do
     if command -v "$candidate" &>/dev/null; then
         JAVA="$candidate"
         break

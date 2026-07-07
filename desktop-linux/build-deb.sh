@@ -47,7 +47,7 @@ cat > "$DEB_ROOT"/usr/local/bin/urfm << 'EOF'
 #!/usr/bin/env bash
 # urfm — urFileManager launcher
 JAVA=""
-for candidate in java /usr/lib/jvm/java-17-openjdk/bin/java /usr/lib/jvm/java-11-openjdk/bin/java /usr/lib/jvm/java-21-openjdk/bin/java; do
+for candidate in java /usr/lib/jvm/java-17-openjdk/bin/java /usr/lib/jvm/java-21-openjdk/bin/java /usr/lib/jvm/java-11-openjdk/bin/java; do
     if command -v "$candidate" &>/dev/null; then
         JAVA="$candidate"
         break

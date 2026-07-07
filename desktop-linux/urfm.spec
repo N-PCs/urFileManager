@@ -5,7 +5,7 @@ Summary:        urFileManager - Terminal-aesthetic bulk file organizer GUI and C
 License:        MIT
 URL:            https://github.com/N-PCs/bulk-file-organiser
 BuildArch:      noarch
-Requires:       java-17-openjdk-headless
+Requires:       (java-17-openjdk-headless or java-21-openjdk-headless or java-11-openjdk-headless or java-latest-openjdk-headless)
 
 %description
 urFileManager (urFM) is a terminal-inspired bulk file organizer that organizes files in a directory by type (Images, Documents, Audio, Video, etc.). It features a Swing-based Java GUI and a CLI mode.
@@ -29,14 +29,17 @@ cat > %{buildroot}/usr/local/bin/urfm << 'EOF'
 #!/usr/bin/env bash
 # urfm — urFileManager launcher
 JAVA=""
-for candidate in java /usr/lib/jvm/java-17-openjdk/bin/java /usr/lib/jvm/java-11-openjdk/bin/java /usr/lib/jvm/java-21-openjdk/bin/java; do
+for candidate in java /usr/lib/jvm/java-17-openjdk/bin/java /usr/lib/jvm/java-21-openjdk/bin/java /usr/lib/jvm/java-11-openjdk/bin/java; do
     if command -v "$candidate" &>/dev/null; then
         JAVA="$candidate"
         break
     fi
 done
 if [ -z "$JAVA" ]; then
-    echo "Error: Java 17+ not found. Please install java-17-openjdk." >&2
+    echo "Error: Java 17+ not found. Install with:" >&2
+    echo "  Fedora: sudo dnf install java-17-openjdk" >&2
+    echo "  Ubuntu: sudo apt install openjdk-17-jre" >&2
+    echo "  Arch:   sudo pacman -S jre17-openjdk" >&2
     exit 1
 fi
 exec "$JAVA" -jar /opt/urfm/urfm.jar "$@"
