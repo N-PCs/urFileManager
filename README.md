@@ -2,7 +2,7 @@
 
 A cross-platform, native C++ utility that organizes cluttered folders into categorized subdirectories — Images, Documents, Audio, Video, Archives — in seconds. Comes with a polished GUI, CLI mode, dry-run preview, PDF reports, and 6 stunning themes.
 
-**Platforms:** Windows (native Win32 GUI) · Linux (FLTK GUI)
+**Platforms:** Windows (native Win32 GUI) · Linux (Java Swing GUI · FLTK GUI alt.)
 
 ## Features
 
@@ -32,6 +32,11 @@ A cross-platform, native C++ utility that organizes cluttered folders into categ
 │   ├── run.bat                # Windows GUI launcher
 │   ├── ufmgr.rc               # Windows resource file
 │   └── ufmgr.manifest         # Windows manifest
+├── frontend-desktop-java/     # Linux Java Swing GUI (terminal aesthetic)
+│   ├── src/urfm/              # Java sources
+│   ├── build.sh               # Java build script
+│   ├── MANIFEST.MF            # JAR manifest
+│   └── RELEASE_README.md      # Quick start
 ├── organizer.py               # Python CLI (cross-platform)
 ├── config.json                # Sorting rules configuration
 ├── scripts/                   # Release automation
@@ -63,7 +68,19 @@ curl -L -o urfm-windows.zip "https://urfilemanager.vercel.app/urfm-windows.zip"
 .\ufmgr.exe C:\Downloads --dry-run
 ```
 
-### Linux (Fedora / Ubuntu / Arch)
+### Linux (Java Terminal Edition — recommended)
+
+```bash
+# Install Java 17+ runtime
+sudo apt install openjdk-17-jre   # Ubuntu
+sudo dnf install java-17-openjdk  # Fedora
+
+# Download & run (no compilation needed)
+chmod +x urfm
+./urfm ~/Downloads --dry-run
+```
+
+### Linux (FLTK Edition — alternative)
 
 ```bash
 # Install FLTK dependency
@@ -71,6 +88,7 @@ sudo apt install libfltk1.3-dev   # Ubuntu
 sudo dnf install fltk-devel       # Fedora
 
 # Build and run
+cd frontend-desktop
 chmod +x build.sh
 ./build.sh
 ./urfm ~/Downloads --dry-run
@@ -87,7 +105,16 @@ cd frontend-desktop
 build.bat
 ```
 
-### Linux (FLTK GUI)
+### Linux — Java Terminal Edition
+
+```bash
+cd frontend-desktop-java
+chmod +x build.sh
+./build.sh
+# Produces urfm.jar + urfm launcher
+```
+
+### Linux — FLTK GUI (alternative)
 
 ```bash
 cd frontend-desktop

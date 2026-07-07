@@ -15,15 +15,15 @@ endobj
 << /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 6 0 R >>
 endobj
 6 0 obj
-<< /Length 3755 >>
+<< /Length 4092 >>
 stream
 0.9 0.9 0.9 RG 0.5 w 30 30 535 782 re S
 0.95 0.95 0.98 rg 40 700 515 100 re f
 0.85 0.85 0.9 RG 1 w 40 700 515 100 re S
 BT /F2 18 Tf 0.1 0.1 0.25 rg 55 765 Td (urFileManager - DRY RUN REPORT) Tj ET
-BT /F1 9 Tf 0.35 0.35 0.45 rg 55 745 Td (Report generated on: 2026-07-07 23:07:27) Tj ET
+BT /F1 9 Tf 0.35 0.35 0.45 rg 55 745 Td (Report generated on: 2026-07-07 23:37:57) Tj ET
 BT /F1 9 Tf 0.35 0.35 0.45 rg 55 730 Td (Target Folder: test_clutter) Tj ET
-BT /F2 10 Tf 0.15 0.5 0.15 rg 55 712 Td (Status: PREVIEW ONLY   |   Total Files: 9   |   Total Space Organised: 444.00 B) Tj ET
+BT /F2 10 Tf 0.15 0.5 0.15 rg 55 712 Td (Status: PREVIEW ONLY   |   Total Files: 10   |   Total Space Organised: 4.74 KB) Tj ET
 0.9 0.9 0.92 rg 40 655 515 22 re f
 0.7 0.7 0.75 RG 1 w 40 655 515 22 re S
 BT /F2 9 Tf 0.15 0.15 0.2 rg 48 662 Td (File Name) Tj ET
@@ -48,43 +48,49 @@ BT /F1 9 Tf 0.15 0.15 0.15 rg 368 601 Td (44.00 B) Tj ET
 BT /F1 9 Tf 0.2 0.2 0.7 rg 458 601 Td (Dry Run Preview) Tj ET
 0.97 0.97 0.99 rg 40 575 515 20 re f
 0.9 0.9 0.9 RG 0.5 w 40 575 m 555 575 l S
-BT /F1 9 Tf 0.15 0.15 0.15 rg 48 581 Td (report.pdf) Tj ET
+BT /F1 9 Tf 0.15 0.15 0.15 rg 48 581 Td (organization_report_preview.pdf) Tj ET
 BT /F1 9 Tf 0.15 0.15 0.15 rg 268 581 Td (Documents) Tj ET
-BT /F1 9 Tf 0.15 0.15 0.15 rg 368 581 Td (50.00 B) Tj ET
+BT /F1 9 Tf 0.15 0.15 0.15 rg 368 581 Td (4.30 KB) Tj ET
 BT /F1 9 Tf 0.2 0.2 0.7 rg 458 581 Td (Dry Run Preview) Tj ET
 0.9 0.9 0.9 RG 0.5 w 40 555 m 555 555 l S
-BT /F1 9 Tf 0.15 0.15 0.15 rg 48 561 Td (resume.docx) Tj ET
+BT /F1 9 Tf 0.15 0.15 0.15 rg 48 561 Td (report.pdf) Tj ET
 BT /F1 9 Tf 0.15 0.15 0.15 rg 268 561 Td (Documents) Tj ET
 BT /F1 9 Tf 0.15 0.15 0.15 rg 368 561 Td (50.00 B) Tj ET
 BT /F1 9 Tf 0.2 0.2 0.7 rg 458 561 Td (Dry Run Preview) Tj ET
 0.97 0.97 0.99 rg 40 535 515 20 re f
 0.9 0.9 0.9 RG 0.5 w 40 535 m 555 535 l S
-BT /F1 9 Tf 0.15 0.15 0.15 rg 48 541 Td (avatar.png) Tj ET
-BT /F1 9 Tf 0.15 0.15 0.15 rg 268 541 Td (Images) Tj ET
+BT /F1 9 Tf 0.15 0.15 0.15 rg 48 541 Td (resume.docx) Tj ET
+BT /F1 9 Tf 0.15 0.15 0.15 rg 268 541 Td (Documents) Tj ET
 BT /F1 9 Tf 0.15 0.15 0.15 rg 368 541 Td (50.00 B) Tj ET
 BT /F1 9 Tf 0.2 0.2 0.7 rg 458 541 Td (Dry Run Preview) Tj ET
 0.9 0.9 0.9 RG 0.5 w 40 515 m 555 515 l S
-BT /F1 9 Tf 0.15 0.15 0.15 rg 48 521 Td (photo.jpg) Tj ET
+BT /F1 9 Tf 0.15 0.15 0.15 rg 48 521 Td (avatar.png) Tj ET
 BT /F1 9 Tf 0.15 0.15 0.15 rg 268 521 Td (Images) Tj ET
 BT /F1 9 Tf 0.15 0.15 0.15 rg 368 521 Td (50.00 B) Tj ET
 BT /F1 9 Tf 0.2 0.2 0.7 rg 458 521 Td (Dry Run Preview) Tj ET
 0.97 0.97 0.99 rg 40 495 515 20 re f
 0.9 0.9 0.9 RG 0.5 w 40 495 m 555 495 l S
-BT /F1 9 Tf 0.15 0.15 0.15 rg 48 501 Td (weird_config.xyz) Tj ET
-BT /F1 9 Tf 0.15 0.15 0.15 rg 268 501 Td (Other) Tj ET
+BT /F1 9 Tf 0.15 0.15 0.15 rg 48 501 Td (photo.jpg) Tj ET
+BT /F1 9 Tf 0.15 0.15 0.15 rg 268 501 Td (Images) Tj ET
 BT /F1 9 Tf 0.15 0.15 0.15 rg 368 501 Td (50.00 B) Tj ET
 BT /F1 9 Tf 0.2 0.2 0.7 rg 458 501 Td (Dry Run Preview) Tj ET
 0.9 0.9 0.9 RG 0.5 w 40 475 m 555 475 l S
-BT /F1 9 Tf 0.15 0.15 0.15 rg 48 481 Td (movie.mp4) Tj ET
-BT /F1 9 Tf 0.15 0.15 0.15 rg 268 481 Td (Video) Tj ET
+BT /F1 9 Tf 0.15 0.15 0.15 rg 48 481 Td (weird_config.xyz) Tj ET
+BT /F1 9 Tf 0.15 0.15 0.15 rg 268 481 Td (Other) Tj ET
 BT /F1 9 Tf 0.15 0.15 0.15 rg 368 481 Td (50.00 B) Tj ET
 BT /F1 9 Tf 0.2 0.2 0.7 rg 458 481 Td (Dry Run Preview) Tj ET
-0.85 0.85 0.85 RG 0.5 w 40 455 m 40 655 l S
-0.85 0.85 0.85 RG 0.5 w 260 455 m 260 655 l S
-0.85 0.85 0.85 RG 0.5 w 360 455 m 360 655 l S
-0.85 0.85 0.85 RG 0.5 w 450 455 m 450 655 l S
-0.85 0.85 0.85 RG 0.5 w 555 455 m 555 655 l S
-0.7 0.7 0.75 RG 1 w 40 455 m 555 455 l S
+0.97 0.97 0.99 rg 40 455 515 20 re f
+0.9 0.9 0.9 RG 0.5 w 40 455 m 555 455 l S
+BT /F1 9 Tf 0.15 0.15 0.15 rg 48 461 Td (movie.mp4) Tj ET
+BT /F1 9 Tf 0.15 0.15 0.15 rg 268 461 Td (Video) Tj ET
+BT /F1 9 Tf 0.15 0.15 0.15 rg 368 461 Td (50.00 B) Tj ET
+BT /F1 9 Tf 0.2 0.2 0.7 rg 458 461 Td (Dry Run Preview) Tj ET
+0.85 0.85 0.85 RG 0.5 w 40 435 m 40 655 l S
+0.85 0.85 0.85 RG 0.5 w 260 435 m 260 655 l S
+0.85 0.85 0.85 RG 0.5 w 360 435 m 360 655 l S
+0.85 0.85 0.85 RG 0.5 w 450 435 m 450 655 l S
+0.85 0.85 0.85 RG 0.5 w 555 435 m 555 655 l S
+0.7 0.7 0.75 RG 1 w 40 435 m 555 435 l S
 BT /F1 8 Tf 0.5 0.5 0.5 rg 270 45 Td (Page 1 of 1) Tj ET
 
 endstream
@@ -101,5 +107,5 @@ xref
 trailer
 << /Size 7 /Root 1 0 R >>
 startxref
-4203
+4540
 %%EOF

@@ -39,17 +39,30 @@ Remove-Item $WinStage -Recurse -Force
 $SizeMb = [math]::Round((Get-Item $WinZip).Length / 1MB, 2)
 Write-Host "  Created: urfm-windows.zip - $SizeMb MB" -ForegroundColor Green
 
-# ── Linux: source tarball with build.sh ────────────────────────────────
-Write-Host "`n[Linux] Packaging source tarball..." -ForegroundColor Yellow
+# ── Linux: Java JAR package ────────────────────────────────────────────
+Write-Host "`n[Linux] Building Java JAR..." -ForegroundColor Yellow
+$JavaDir = Join-Path $Root "frontend-desktop-java"
+$JavaJar = Join-Path $JavaDir "urfm.jar"
+if (-not (Test-Path $JavaJar)) {
+    Write-Host "  Building urfm.jar..." -ForegroundColor Yellow
+    $OrigDir = Get-Location
+    Set-Location $JavaDir
+    & "bash" "./build.sh"
+    Set-Location $OrigDir
+    if (-not (Test-Path $JavaJar)) {
+        Write-Error "  Java build failed - urfm.jar still missing."
+    }
+}
+
 $LinuxStage = Join-Path $env:TEMP "urfm-linux-stage-$(Get-Random)"
 New-Item -ItemType Directory -Path $LinuxStage -Force | Out-Null
-foreach ($f in @("core.cpp", "core.h", "gui_fltk.cpp", "build.sh")) {
-    Copy-Item (Join-Path $DesktopDir $f) $LinuxStage
+foreach ($f in @("urfm.jar", "urfm", "config.json")) {
+    Copy-Item (Join-Path $JavaDir $f) $LinuxStage
 }
-Copy-Item $ConfigFile $LinuxStage
-Copy-Item (Join-Path $DesktopDir "RELEASE_README.md") (Join-Path $LinuxStage "README.txt")
+Copy-Item (Join-Path $JavaDir "RELEASE_README.md") (Join-Path $LinuxStage "README.txt")
 
 $LinuxTar = Join-Path $PublicDir "urfm-linux.tar.gz"
+if (Test-Path $LinuxTar) { Remove-Item $LinuxTar -Force }
 Push-Location $LinuxStage
 tar -czf $LinuxTar *
 Pop-Location

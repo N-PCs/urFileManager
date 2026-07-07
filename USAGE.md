@@ -15,7 +15,22 @@ python organizer.py /path/to/folder --dry-run
 python organizer.py /path/to/folder
 ```
 
-### C++ GUI (Linux)
+### Java GUI (Linux — recommended)
+
+```bash
+# 1. Install Java 17+
+sudo apt install openjdk-17-jre   # Ubuntu
+sudo dnf install java-17-openjdk  # Fedora
+
+# 2. Build & run
+cd frontend-desktop-java
+chmod +x build.sh
+./build.sh
+./urfm                           # opens GUI (terminal aesthetic)
+./urfm /path/to/folder --dry-run # CLI mode
+```
+
+### C++ FLTK GUI (Linux — alternative)
 
 ```bash
 # 1. Install FLTK
@@ -84,7 +99,22 @@ python organizer.py ~/Downloads --revert
 
 ---
 
-## C++ CLI Reference (Linux `urfm`)
+## Java CLI Reference (Linux `urfm`)
+
+```bash
+usage: urfm <directory> [--dry-run] [--revert] [--version]
+
+# Preview
+./urfm ~/Downloads --dry-run
+
+# Execute
+./urfm ~/Downloads
+
+# Revert
+./urfm ~/Downloads --revert
+```
+
+## C++ CLI Reference (Linux FLTK `urfm`)
 
 ```bash
 usage: urfm <directory> [--dry-run]

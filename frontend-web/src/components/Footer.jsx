@@ -54,7 +54,7 @@ export default function Footer() {
             <img src="./logo.png" alt="urFM logo" className="footer-logo-img" />
             urFM
           </span>
-          <p className="footer-tagline">Smart file organization for Windows & Linux.</p>
+          <p className="footer-tagline">Smart file organization for Windows (C++) &amp; Linux (Java).</p>
         </div>
 
         <div className="footer-links">

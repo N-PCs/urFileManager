@@ -47,6 +47,11 @@ release/
 frontend-web/node_modules/
 frontend-web/dist/
 
+# Java
+frontend-desktop-java/build/
+frontend-desktop-java/urfm.jar
+frontend-desktop-java/urfm
+
 # Archives (allow website release bundles in public/)
 *.zip
 *.tar.gz

@@ -79,7 +79,7 @@ export default function Download() {
           <span className="section-label" style={{color:"var(--primary)",fontSize:"1.0rem"}}>Download</span>
           <h2 className="section-title">Available for Windows & Linux</h2>
           <p className="section-subtitle">
-            Native C++ performance on Windows and Linux. No runtime required.
+            Native C++ on Windows, Java Swing on Linux. No runtime required.
             {manifest?.generated && (
               <span className="manifest-date">
                 {' '}
