@@ -107,6 +107,45 @@
   transition: color 0.3s ease;
 }
 
+.platform-toggle {
+  display: flex;
+  gap: 6px;
+  margin-top: 20px;
+  padding: 4px;
+  background: var(--bg-muted);
+  border-radius: 10px;
+  width: fit-content;
+}
+
+.platform-btn {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  padding: 7px 20px;
+  border: none;
+  border-radius: 7px;
+  cursor: pointer;
+  background: transparent;
+  color: var(--text-secondary);
+  transition: all 0.25s ease;
+}
+
+.platform-btn:hover {
+  color: var(--text);
+}
+
+.platform-btn.active {
+  background: var(--bg-white);
+  color: var(--primary);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+}
+
+.platform-theme-count {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-top: 10px;
+  letter-spacing: 0.02em;
+}
+
 @media (max-width: 860px) {
   .themes-layout {
     grid-template-columns: 1fr;
