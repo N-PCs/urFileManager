@@ -15,6 +15,7 @@ mkdir -p %{buildroot}/opt/urfm
 mkdir -p %{buildroot}/usr/local/bin
 mkdir -p %{buildroot}/usr/share/applications
 mkdir -p %{buildroot}/usr/share/icons/hicolor/scalable/apps
+mkdir -p %{buildroot}/usr/share/doc/urfm
 
 # Copy the compiled JAR and configuration
 cp %{_sourcedir}/urfm.jar %{buildroot}/opt/urfm/urfm.jar
@@ -23,6 +24,9 @@ cp %{_sourcedir}/config.json %{buildroot}/opt/urfm/config.json
 # Copy desktop integration files
 cp %{_sourcedir}/urfm-icon.svg %{buildroot}/usr/share/icons/hicolor/scalable/apps/urfm.svg
 cp %{_sourcedir}/urfm.desktop %{buildroot}/usr/share/applications/urfm.desktop
+
+# Copy documentation
+cp %{_sourcedir}/RELEASE_README.md %{buildroot}/usr/share/doc/urfm/README.md
 
 # Create the launcher script directly in install
 cat > %{buildroot}/usr/local/bin/urfm << 'EOF'
@@ -52,6 +56,7 @@ chmod +x %{buildroot}/usr/local/bin/urfm
 /usr/local/bin/urfm
 /usr/share/applications/urfm.desktop
 /usr/share/icons/hicolor/scalable/apps/urfm.svg
+/usr/share/doc/urfm/README.md
 
 %changelog
 * Wed Jul 08 2026 Neel Pandey <neelpandeyofficial@gmail.com> - 1.0.0-1

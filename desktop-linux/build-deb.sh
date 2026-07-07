@@ -21,6 +21,7 @@ mkdir -p "$DEB_ROOT"/opt/urfm
 mkdir -p "$DEB_ROOT"/usr/local/bin
 mkdir -p "$DEB_ROOT"/usr/share/applications
 mkdir -p "$DEB_ROOT"/usr/share/icons/hicolor/scalable/apps
+mkdir -p "$DEB_ROOT"/usr/share/doc/urfm
 
 # 3. Create control file
 cat > "$DEB_ROOT"/DEBIAN/control << 'EOF'
@@ -41,6 +42,7 @@ cp urfm.jar "$DEB_ROOT/opt/urfm/"
 cp ../config.json "$DEB_ROOT/opt/urfm/"
 cp urfm-icon.svg "$DEB_ROOT/usr/share/icons/hicolor/scalable/apps/urfm.svg"
 cp urfm.desktop "$DEB_ROOT/usr/share/applications/"
+cp RELEASE_README.md "$DEB_ROOT/usr/share/doc/urfm/README.md"
 
 # 5. Create launcher script
 cat > "$DEB_ROOT"/usr/local/bin/urfm << 'EOF'

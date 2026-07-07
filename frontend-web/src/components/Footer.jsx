@@ -50,14 +50,14 @@ export default function Footer() {
     <footer className="footer">
       <div className="container footer-inner">
         <div className="footer-brand">
-          <span className="footer-logo" style={{color:"var(--primary)"}}>
+          <span className="footer-logo" style={{ color: "var(--primary)" }}>
             <img src="./logo.png" alt="urFM logo" className="footer-logo-img" />
             urFM
           </span>
           <p className="footer-tagline">Smart file organization for Windows (C++) &amp; Linux (Java).</p>
         </div>
 
-        <div className="footer-links">
+        <div className="footer-links" style={{ color: "var(--primary)" }}>
           <a href="#features">Features</a>
           <a href="#how-it-works">How it works</a>
           <a href="#themes">Themes</a>

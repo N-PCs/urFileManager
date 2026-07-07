@@ -1,26 +1,26 @@
 {
   "version": "1.0.0",
-  "generated": "2026-07-07T20:20:59Z",
+  "generated": "2026-07-07T20:47:19Z",
   "files": [
     {
       "name": "urfm-windows.zip",
       "platform": "windows",
-      "size": 403961
+      "size": 403956
     },
     {
       "name": "urfm-linux.tar.gz",
       "platform": "linux",
-      "size": 24604
+      "size": 25070
     },
     {
       "name": "urfm-1.0.0-1.noarch.rpm",
       "platform": "linux-rpm",
-      "size": 26316
+      "size": 27379
     },
     {
       "name": "urfm_1.0.0_all.deb",
       "platform": "linux-deb",
-      "size": 25664
+      "size": 26626
     }
   ]
 }

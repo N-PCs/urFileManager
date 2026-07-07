@@ -210,8 +210,9 @@ def main():
     config_path = os.path.join(script_dir, '..', 'config.json')
     icon_path = os.path.join(script_dir, 'urfm-icon.svg')
     desktop_path = os.path.join(script_dir, 'urfm.desktop')
+    readme_path = os.path.join(script_dir, 'RELEASE_README.md')
     
-    for f in [jar_path, config_path, icon_path, desktop_path]:
+    for f in [jar_path, config_path, icon_path, desktop_path, readme_path]:
         if not os.path.exists(f):
             print(f"[ERROR] Required file not found: {f}")
             sys.exit(1)
@@ -245,6 +246,8 @@ exec "$JAVA" -jar /opt/urfm/urfm.jar "$@"
         icon_data = f.read()
     with open(desktop_path, 'rb') as f:
         desktop_data = f.read()
+    with open(readme_path, 'rb') as f:
+        readme_data = f.read()
     
     # File entries: (install_path, content, mode)
     files = [
@@ -253,6 +256,7 @@ exec "$JAVA" -jar /opt/urfm/urfm.jar "$@"
         ("./usr/local/bin/urfm", launcher, 0o100755),
         ("./usr/share/applications/urfm.desktop", desktop_data, 0o100644),
         ("./usr/share/icons/hicolor/scalable/apps/urfm.svg", icon_data, 0o100644),
+        ("./usr/share/doc/urfm/README.md", readme_data, 0o100644),
     ]
     
     dirs = [
@@ -260,6 +264,7 @@ exec "$JAVA" -jar /opt/urfm/urfm.jar "$@"
         "./usr/local/bin",
         "./usr/share/applications",
         "./usr/share/icons/hicolor/scalable/apps",
+        "./usr/share/doc/urfm",
     ]
     
     # Build CPIO payload
