@@ -1,28 +1,27 @@
-urFileManager (urFM) — Quick Start
-==================================
+urFileManager (urFM) — Quick Start (Windows)
+=============================================
 
 Windows
 -------
-  GUI:  Double-click run.bat
-  CLI:  ufmgr.bat C:\Downloads --dry-run
+  GUI:  Double-click run.bat   (launches ufmgr.exe)
+  CLI:  ufmgr-cli.bat "C:\Users\You\Downloads" --no-dry-run
 
-Linux
------
-  Build first (see build.sh), then:
-  CLI:  ./urfm ~/Downloads --dry-run
+  CLI commands (ufmgr-cli.exe):
+    ufmgr-cli.exe <folder> [--no-dry-run]   Organize a folder (preview by default)
+    ufmgr-cli.exe --revert <folder>         Undo a previous organization
+    ufmgr-cli.exe -h                        Show usage / examples
 
-macOS
------
-  You rich Mac kids have it already! (check your system :D)
-  
+  See windows_usage.md for full details.
+
 Options
 -------
-  --dry-run    Preview moves without changing files (default in GUI)
-               (Omit the flag to apply moves immediately)
+  --dry-run      Preview moves without changing files (CLI default)
+  --no-dry-run   Apply the moves immediately
+  --revert       Reverse a previous organization
 
 Files
 -----
   config.json    Sorting rules — edit to add extensions or categories
-  organizer.log  Full audit log of every action
+  organizer.log  Full audit log of every action (generated at runtime)
 
 More: https://github.com/N-PCs/bulk-file-organiser
