@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'
 import './Download.css'
-import { IconWindows, IconCheck, IconDownload, IconTerminal } from './Icons'
+import { IconWindows, IconLinux, IconCheck, IconDownload, IconTerminal, IconFedora, IconUbuntu } from './Icons'
 import {
   VERSION,
   platforms,
@@ -11,7 +11,13 @@ import {
 
 const platformIcons = {
   windows: IconWindows,
-  linux: IconDownload,
+  linux: IconLinux,
+}
+
+const formatIcons = {
+  rpm: IconFedora,
+  deb: IconUbuntu,
+  tarball: IconLinux,
 }
 
 function CopyButton({ text, label }) {
@@ -34,11 +40,159 @@ function CopyButton({ text, label }) {
   )
 }
 
+function WindowsCard({ platform, manifest, origin, onSelect }) {
+  const Icon = platformIcons[platform.icon]
+  const size = manifest?.files?.find((f) => f.name === platform.zipName)?.size ?? null
+  const href = getDownloadUrl(platform.zipName, origin)
+
+  return (
+    <div className="download-platform-card card">
+      <div className="platform-top">
+        <Icon className="platform-icon" />
+        <h3 className="platform-name">{platform.name}</h3>
+        {size != null && <span className="platform-size">{formatBytes(size)}</span>}
+      </div>
+      <p className="platform-desc">{platform.description}</p>
+
+      <ul className="package-list">
+        {platform.contents.map((item) => (
+          <li key={item}>
+            <IconCheck className="check-icon" />
+            {item}
+          </li>
+        ))}
+      </ul>
+
+      <a
+        href={href}
+        download={platform.zipName}
+        className="btn btn-primary btn-lg download-btn"
+        onClick={() => onSelect(platform.id)}
+      >
+        <IconDownload className="btn-icon" />
+        Download v{VERSION}
+        {size != null && <span className="btn-size"> ({formatBytes(size)})</span>}
+      </a>
+      <p className="download-note">{platform.note}</p>
+
+      <details className="platform-details">
+        <summary>System requirements & usage</summary>
+        <div className="sys-req card">
+          <dl>
+            {Object.entries(platform.sysReqs).map(([k, v]) => (
+              <div key={k}>
+                <dt>{k}</dt>
+                <dd>{v}</dd>
+              </div>
+            ))}
+          </dl>
+        </div>
+        <div className="cli-preview card">
+          <h4>After extracting</h4>
+          <pre>
+            <code>{platform.usageCli.join('\n')}</code>
+          </pre>
+        </div>
+      </details>
+    </div>
+  )
+}
+
+function LinuxCard({ platform, manifest, origin, onSelect }) {
+  const [selectedFormat, setSelectedFormat] = useState('tarball')
+  const Icon = platformIcons[platform.icon]
+  const format = platform.formats.find((f) => f.id === selectedFormat) ?? platform.formats[0]
+  const FormatIcon = formatIcons[format.id] || IconLinux
+  const size = manifest?.files?.find((f) => f.name === format.zipName)?.size ?? null
+  const href = getDownloadUrl(format.zipName, origin)
+
+  return (
+    <div className="download-platform-card card linux-card">
+      <div className="platform-top">
+        <Icon className="platform-icon" />
+        <h3 className="platform-name">{platform.name}</h3>
+      </div>
+      <p className="platform-desc">{platform.description}</p>
+
+      {/* Format Selector */}
+      <div className="linux-format-selector">
+        <span className="format-label">Package format</span>
+        <div className="format-tabs">
+          {platform.formats.map((f) => {
+            const FIcon = formatIcons[f.id] || IconLinux
+            return (
+              <button
+                key={f.id}
+                type="button"
+                className={`format-tab ${selectedFormat === f.id ? 'active' : ''}`}
+                onClick={() => setSelectedFormat(f.id)}
+              >
+                <FIcon className="format-tab-icon" />
+                {f.label}
+              </button>
+            )
+          })}
+        </div>
+      </div>
+
+      {/* Format Details */}
+      <div className="format-detail-area">
+        <div className="format-distro-badge">
+          <FormatIcon className="format-distro-icon" />
+          <span>{format.distro}</span>
+          {size != null && <span className="platform-size">{formatBytes(size)}</span>}
+        </div>
+
+        <ul className="package-list">
+          {format.contents.map((item) => (
+            <li key={item}>
+              <IconCheck className="check-icon" />
+              {item}
+            </li>
+          ))}
+        </ul>
+
+        <a
+          href={href}
+          download={format.zipName}
+          className="btn btn-primary btn-lg download-btn"
+          onClick={() => onSelect('linux')}
+        >
+          <IconDownload className="btn-icon" />
+          Download v{VERSION}
+          {size != null && <span className="btn-size"> ({formatBytes(size)})</span>}
+        </a>
+        <p className="download-note">{format.note}</p>
+
+        <details className="platform-details">
+          <summary>System requirements & usage</summary>
+          <div className="sys-req card">
+            <dl>
+              {Object.entries(format.sysReqs).map(([k, v]) => (
+                <div key={k}>
+                  <dt>{k}</dt>
+                  <dd>{v}</dd>
+                </div>
+              ))}
+            </dl>
+          </div>
+          <div className="cli-preview card">
+            <h4>After installing</h4>
+            <pre>
+              <code>{format.usageCli.join('\n')}</code>
+            </pre>
+          </div>
+        </details>
+      </div>
+    </div>
+  )
+}
+
 export default function Download() {
   const [manifest, setManifest] = useState(null)
   const [manifestError, setManifestError] = useState(false)
-  const [activeCliTab, setActiveCliTab] = useState('powershell')
-  const [selectedPlatform, setSelectedPlatform] = useState('windows')
+  const [activeCliTab, setActiveCliTab] = useState('bash')
+  const [selectedPlatform, setSelectedPlatform] = useState('linux')
 
   const origin = typeof window !== 'undefined' ? window.location.origin : ''
 
@@ -52,25 +206,25 @@ export default function Download() {
       .catch(() => setManifestError(true))
   }, [])
 
-  const getFileSize = (zipName) => {
-    const entry = manifest?.files?.find((f) => f.name === zipName)
-    return entry?.size ?? null
+  // For the CLI section, get the right zipName based on selected platform
+  const getSelectedZipName = () => {
+    const plat = platforms.find((p) => p.id === selectedPlatform)
+    if (!plat) return 'urfm-linux.tar.gz'
+    if (plat.zipName) return plat.zipName
+    if (plat.formats) return plat.formats[0].zipName
+    return 'urfm-linux.tar.gz'
   }
 
-  const isAvailable = (zipName) => {
-    if (manifestError) return false
-    if (!manifest) return null
-    return manifest.files?.some((f) => f.name === zipName)
-  }
-
-  const selected = platforms.find((p) => p.id === selectedPlatform) ?? platforms[0]
-  const cliCommands = getCliCommands(selected.zipName, origin)
+  const cliCommands = getCliCommands(getSelectedZipName(), origin)
   const cliTabs = [
-    { id: 'powershell', label: 'PowerShell' },
-    { id: 'cmd', label: 'CMD (curl)' },
     { id: 'bash', label: 'Bash' },
     { id: 'wget', label: 'wget' },
+    { id: 'powershell', label: 'PowerShell' },
+    { id: 'cmd', label: 'CMD (curl)' },
   ]
+
+  const windowsPlatform = platforms.find((p) => p.id === 'windows')
+  const linuxPlatform = platforms.find((p) => p.id === 'linux')
 
   return (
     <section id="download" className="section download">
@@ -79,7 +233,7 @@ export default function Download() {
           <span className="section-label" style={{color:"var(--primary)",fontSize:"1.0rem"}}>Download</span>
           <h2 className="section-title">Available for Windows & Linux</h2>
           <p className="section-subtitle">
-            Native C++ on Windows, Java Swing on Linux. No runtime required.
+            Native C++ on Windows, Java Swing on Linux — Tarball, Fedora RPM, or Ubuntu DEB.
             {manifest?.generated && (
               <span className="manifest-date">
                 {' '}
@@ -92,76 +246,28 @@ export default function Download() {
         {manifestError && (
           <div className="download-alert" role="alert">
             Release files are not deployed yet. Run{' '}
-            <code>.\scripts\package-release.ps1</code> from the repo root, commit the files in{' '}
+            <code>./scripts/package-release.sh</code> from the repo root, commit the files in{' '}
             <code>frontend-web/public/</code>, then redeploy.
           </div>
         )}
 
         <div className="download-grid">
-          {platforms.map((platform) => {
-            const Icon = platformIcons[platform.id]
-            const available = isAvailable(platform.zipName)
-            const size = getFileSize(platform.zipName)
-            const href = getDownloadUrl(platform.zipName, origin)
-
-            return (
-              <div key={platform.id} className="download-platform-card card">
-                <div className="platform-top">
-                  <Icon className="platform-icon" />
-                  <h3 className="platform-name">{platform.name}</h3>
-                  {size != null && <span className="platform-size">{formatBytes(size)}</span>}
-                </div>
-                <p className="platform-desc">{platform.description}</p>
-
-                <ul className="package-list">
-                  {platform.contents.map((item) => (
-                    <li key={item}>
-                      <IconCheck className="check-icon" />
-                      {item}
-                    </li>
-                  ))}
-                </ul>
-
-                {available === false ? (
-                  <button type="button" className="btn btn-primary btn-lg download-btn" disabled>
-                    Not available on site
-                  </button>
-                ) : (
-                  <a
-                    href={href}
-                    download={platform.zipName}
-                    className="btn btn-primary btn-lg download-btn"
-                    onClick={() => setSelectedPlatform(platform.id)}
-                  >
-                    <IconDownload className="btn-icon" />
-                    Download v{VERSION}
-                    {size != null && <span className="btn-size"> ({formatBytes(size)})</span>}
-                  </a>
-                )}
-                <p className="download-note">{platform.note}</p>
-
-                <details className="platform-details">
-                  <summary>System requirements & usage</summary>
-                  <div className="sys-req card">
-                    <dl>
-                      {Object.entries(platform.sysReqs).map(([k, v]) => (
-                        <div key={k}>
-                          <dt>{k}</dt>
-                          <dd>{v}</dd>
-                        </div>
-                      ))}
-                    </dl>
-                  </div>
-                  <div className="cli-preview card">
-                    <h4>After extracting</h4>
-                    <pre>
-                      <code>{platform.usageCli.join('\n')}</code>
-                    </pre>
-                  </div>
-                </details>
-              </div>
-            )
-          })}
+          {windowsPlatform && (
+            <WindowsCard
+              platform={windowsPlatform}
+              manifest={manifest}
+              origin={origin}
+              onSelect={setSelectedPlatform}
+            />
+          )}
+          {linuxPlatform && (
+            <LinuxCard
+              platform={linuxPlatform}
+              manifest={manifest}
+              origin={origin}
+              onSelect={setSelectedPlatform}
+            />
+          )}
         </div>
 
         <div className="cli-download-section card">
@@ -170,7 +276,7 @@ export default function Download() {
             <div>
               <h3>Download via command line</h3>
               <p>
-                Grab the release from PowerShell, CMD, or any terminal — no browser needed.
+                Grab the release from any terminal — no browser needed.
               </p>
             </div>
           </div>

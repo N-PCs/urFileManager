@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import './Navbar.css'
 import { IconHome, IconMenu, IconX } from './Icons'
 
-export default function Navbar() {
+export default function Navbar({ currentRoute }) {
   const [open, setOpen] = useState(false)
 
   useEffect(() => {
@@ -13,6 +13,8 @@ export default function Navbar() {
     }
     return () => { document.body.style.overflow = '' }
   }, [open])
+
+  const isDocs = currentRoute === '#docs'
 
   return (
     <>
@@ -31,6 +33,7 @@ export default function Navbar() {
             <a href="#features">Features</a>
             <a href="#how-it-works">How it works</a>
             <a href="#themes">Themes</a>
+            <a href="#docs" style={{ color: isDocs ? 'var(--primary)' : 'var(--text-secondary)', fontWeight: isDocs ? '700' : '500' }}>Docs</a>
             <a href="#download" className="btn btn-primary navbar-cta" style={{ color: 'black', background: 'var(--primary)' }}>Download</a>
           </nav>
 
@@ -57,6 +60,7 @@ export default function Navbar() {
           <a href="#features" onClick={() => setOpen(false)}>Features</a>
           <a href="#how-it-works" onClick={() => setOpen(false)}>How it works</a>
           <a href="#themes" onClick={() => setOpen(false)}>Themes</a>
+          <a href="#docs" style={{ color: isDocs ? 'var(--primary)' : 'inherit', fontWeight: isDocs ? '700' : 'inherit' }} onClick={() => setOpen(false)}>Docs</a>
           <a href="#download" className="sidebar-cta" onClick={() => setOpen(false)}>Download</a>
         </nav>
       </aside>

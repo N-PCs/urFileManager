@@ -1,8 +1,8 @@
 # urFileManager (urFM)
 
-A cross-platform, native C++ utility that organizes cluttered folders into categorized subdirectories — Images, Documents, Audio, Video, Archives — in seconds. Comes with a polished GUI, CLI mode, dry-run preview, PDF reports, and 6 stunning themes.
+A cross-platform utility that organizes cluttered folders into categorized subdirectories — Images, Documents, Audio, Video, Archives — in seconds. Comes with a polished GUI, CLI mode, dry-run preview, PDF reports, and customizable console themes.
 
-**Platforms:** Windows (native Win32 GUI) · Linux (Java Swing GUI · FLTK GUI alt.)
+**Platforms:** Windows (Native C++ Win32 GUI) · Linux (Java Swing GUI with Fedora RPM & Ubuntu DEB support)
 
 ## Features
 
@@ -68,30 +68,67 @@ curl -L -o urfm-windows.zip "https://urfilemanager.vercel.app/urfm-windows.zip"
 .\ufmgr.exe C:\Downloads --dry-run
 ```
 
-### Linux (Java Terminal Edition — recommended)
+### Linux (Fedora RPM — recommended)
+
+1. Download the `urfm-1.0.0-1.noarch.rpm` package.
+2. Install the package:
 
 ```bash
-# Install Java 17+ runtime
-sudo apt install openjdk-17-jre   # Ubuntu
-sudo dnf install java-17-openjdk  # Fedora
-
-# Download & run (no compilation needed)
-chmod +x urfm
-./urfm ~/Downloads --dry-run
+sudo dnf install ./urfm-1.0.0-1.noarch.rpm
 ```
 
-### Linux (FLTK Edition — alternative)
+3. Run it from the application menu, or via terminal:
 
 ```bash
-# Install FLTK dependency
-sudo apt install libfltk1.3-dev   # Ubuntu
-sudo dnf install fltk-devel       # Fedora
+urfm                           # Launch GUI
+urfm ~/Downloads --dry-run    # Preview organization
+urfm ~/Downloads               # Run organization
+urfm ~/Downloads --revert      # Undo last run
+urfm --version                 # Show version
+urfm --gui                     # Force open GUI (even with a directory arg)
+```
 
-# Build and run
-cd desktop-windows
-chmod +x build.sh
-./build.sh
-./urfm ~/Downloads --dry-run
+### Linux (Ubuntu DEB)
+
+1. Download the `urfm_1.0.0_all.deb` package.
+2. Install the package:
+
+```bash
+sudo dpkg -i ./urfm_1.0.0_all.deb
+sudo apt install -f            # Fix any missing dependencies
+```
+
+3. Run it from the application menu, or via terminal:
+
+```bash
+urfm                           # Launch GUI
+urfm ~/Downloads --dry-run    # Preview organization
+urfm ~/Downloads               # Run organization
+urfm ~/Downloads --revert      # Undo last run
+urfm --version                 # Show version
+urfm --gui                     # Force open GUI (even with a directory arg)
+```
+
+### Linux (Java Tarball)
+
+1. Download `urfm-linux.tar.gz` and extract it.
+2. Install Java 17+ runtime if not already present:
+
+```bash
+sudo apt install openjdk-17-jre   # Ubuntu
+sudo dnf install java-17-openjdk  # Fedora
+```
+
+3. Run the application:
+
+```bash
+chmod +x urfm
+./urfm                           # Launch GUI
+./urfm ~/Downloads --dry-run    # Preview organization
+./urfm ~/Downloads               # Run organization
+./urfm ~/Downloads --revert      # Undo last run
+./urfm --version                 # Show version
+./urfm --gui                     # Force open GUI (even with a directory arg)
 ```
 
 ## Building from Source
@@ -135,12 +172,9 @@ python organizer.py ~/Downloads
 
 Release archives must live in `frontend-web/public/` so Vite copies them into the deployed site.
 
-```powershell
-# From project root — builds Windows EXE if needed, packages all platforms
-.\scripts\package-release.ps1
-
-# Or from frontend-web/
-npm run release
+```bash
+# From project root — builds Java Swing files, packaging Linux tarball and RPM (if rpmbuild exists)
+./scripts/package-release.sh
 ```
 
 Then commit `frontend-web/public/urfm-*.zip`, `urfm-*.tar.gz`, and `downloads.json`, and push to redeploy.

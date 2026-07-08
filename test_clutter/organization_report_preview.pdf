@@ -15,15 +15,15 @@ endobj
 << /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 6 0 R >>
 endobj
 6 0 obj
-<< /Length 4092 >>
+<< /Length 4140 >>
 stream
 0.9 0.9 0.9 RG 0.5 w 30 30 535 782 re S
 0.95 0.95 0.98 rg 40 700 515 100 re f
 0.85 0.85 0.9 RG 1 w 40 700 515 100 re S
 BT /F2 18 Tf 0.1 0.1 0.25 rg 55 765 Td (urFileManager - DRY RUN REPORT) Tj ET
-BT /F1 9 Tf 0.35 0.35 0.45 rg 55 745 Td (Report generated on: 2026-07-07 23:37:57) Tj ET
-BT /F1 9 Tf 0.35 0.35 0.45 rg 55 730 Td (Target Folder: test_clutter) Tj ET
-BT /F2 10 Tf 0.15 0.5 0.15 rg 55 712 Td (Status: PREVIEW ONLY   |   Total Files: 10   |   Total Space Organised: 4.74 KB) Tj ET
+BT /F1 9 Tf 0.35 0.35 0.45 rg 55 745 Td (Report generated on: 2026-07-08 01:01:39) Tj ET
+BT /F1 9 Tf 0.35 0.35 0.45 rg 55 730 Td (Target Folder: /home/neelpandey/urFileManager/desktop-linux/../test_clutter) Tj ET
+BT /F2 10 Tf 0.15 0.5 0.15 rg 55 712 Td (Status: PREVIEW ONLY   |   Total Files: 10   |   Total Space Organised: 5.06 KB) Tj ET
 0.9 0.9 0.92 rg 40 655 515 22 re f
 0.7 0.7 0.75 RG 1 w 40 655 515 22 re S
 BT /F2 9 Tf 0.15 0.15 0.2 rg 48 662 Td (File Name) Tj ET
@@ -50,7 +50,7 @@ BT /F1 9 Tf 0.2 0.2 0.7 rg 458 601 Td (Dry Run Preview) Tj ET
 0.9 0.9 0.9 RG 0.5 w 40 575 m 555 575 l S
 BT /F1 9 Tf 0.15 0.15 0.15 rg 48 581 Td (organization_report_preview.pdf) Tj ET
 BT /F1 9 Tf 0.15 0.15 0.15 rg 268 581 Td (Documents) Tj ET
-BT /F1 9 Tf 0.15 0.15 0.15 rg 368 581 Td (4.30 KB) Tj ET
+BT /F1 9 Tf 0.15 0.15 0.15 rg 368 581 Td (4.63 KB) Tj ET
 BT /F1 9 Tf 0.2 0.2 0.7 rg 458 581 Td (Dry Run Preview) Tj ET
 0.9 0.9 0.9 RG 0.5 w 40 555 m 555 555 l S
 BT /F1 9 Tf 0.15 0.15 0.15 rg 48 561 Td (report.pdf) Tj ET
@@ -107,5 +107,5 @@ xref
 trailer
 << /Size 7 /Root 1 0 R >>
 startxref
-4540
+4588
 %%EOF

@@ -50,7 +50,7 @@ rm -rf "$OUT_DIR"
 mkdir -p "$OUT_DIR"
 
 echo "[2/6] Compiling Java sources..."
-$JAVAC -d "$OUT_DIR" $(find "$SRC_DIR" -name "*.java")
+$JAVAC --release 17 -d "$OUT_DIR" $(find "$SRC_DIR" -name "*.java")
 
 echo "[3/6] Creating executable JAR..."
 cd "$OUT_DIR"
@@ -63,7 +63,7 @@ cat > urfm << 'LAUNCHER'
 # urfm — urFileManager launcher
 DIR="$(cd "$(dirname "$0")" && pwd)"
 JAVA=""
-for candidate in java /usr/lib/jvm/java-17-openjdk/bin/java /usr/lib/jvm/java-11-openjdk/bin/java /usr/lib/jvm/java-21-openjdk/bin/java; do
+for candidate in java /usr/lib/jvm/java-17-openjdk/bin/java /usr/lib/jvm/java-21-openjdk/bin/java /usr/lib/jvm/java-11-openjdk/bin/java; do
     if command -v "$candidate" &>/dev/null; then
         JAVA="$candidate"
         break

@@ -156,7 +156,6 @@ export default function Themes() {
   const [platform, setPlatform] = useState('windows')
   const [active, setActive] = useState(() => {
     const saved = safeStorage.get(STORAGE_KEY)
-    const savedPlatform = safeStorage.get('urfm-platform') || 'windows'
     return saved && (windowsThemes.some(t => t.name === saved) || linuxThemes.some(t => t.name === saved))
       ? saved : null
   })

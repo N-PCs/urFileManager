@@ -24,4 +24,4 @@ Files
   config.json    Sorting rules — edit to add extensions or categories
   organizer.log  Full audit log of every action (generated at runtime)
 
-More: https://github.com/N-PCs/bulk-file-organiser
+More: https://github.com/N-PCs/urFileManager

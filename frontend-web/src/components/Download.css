@@ -411,3 +411,91 @@
     font-size: 1.125rem;
   }
 }
+
+/* Linux Card Format Selector & Layout */
+.linux-card {
+  display: flex;
+  flex-direction: column;
+}
+
+.linux-format-selector {
+  margin-bottom: 20px;
+  background: var(--bg);
+  padding: 12px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+}
+
+.format-label {
+  display: block;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+
+.format-tabs {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.format-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--bg-muted);
+  transition: all 0.2s ease;
+}
+
+.format-tab:hover {
+  border-color: var(--border-strong);
+  color: var(--text);
+}
+
+.format-tab.active {
+  background: var(--accent-soft);
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+.format-tab-icon {
+  width: 14px;
+  height: 14px;
+}
+
+.format-detail-area {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.format-distro-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--bg-muted);
+  border: 1px solid var(--border);
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: 16px;
+  width: fit-content;
+}
+
+.format-distro-icon {
+  width: 14px;
+  height: 14px;
+  color: var(--primary);
+}
+
