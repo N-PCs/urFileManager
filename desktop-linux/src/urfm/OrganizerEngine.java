@@ -11,6 +11,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 public class OrganizerEngine {
 
@@ -64,11 +65,65 @@ public class OrganizerEngine {
 
             log(listener, "[INFO] Revert complete. Reverted: " + reverted + ", Errors: " + errors);
             if (errors == 0) {
+                cleanupAfterRevert(sourceDir, moves, listener);
                 Files.delete(undoPath);
                 log(listener, "[INFO] Undo log removed.");
             }
         } catch (Exception e) {
             log(listener, "[ERROR] An error occurred during revert: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Removes generated report PDFs and any now-empty category folders that the
+     * organization created, leaving the target folder clean after a revert.
+     */
+    private static void cleanupAfterRevert(Path sourceDir, List<Map<String, String>> moves, LogListener listener) {
+        // Remove the generated report PDFs anywhere under the target folder
+        String[] reportNames = {"organization_report.pdf", "organization_report_preview.pdf"};
+        try (Stream<Path> walk = Files.walk(sourceDir)) {
+            walk.filter(Files::isRegularFile)
+                .filter(p -> {
+                    String name = p.getFileName().toString();
+                    for (String r : reportNames) {
+                        if (name.equals(r)) return true;
+                    }
+                    return false;
+                })
+                .forEach(p -> {
+                    try {
+                        Files.delete(p);
+                        log(listener, "[INFO] Removed report file: " + p);
+                    } catch (IOException e) {
+                        log(listener, "[WARN] Could not remove report file: " + p);
+                    }
+                });
+        } catch (IOException ignored) {}
+
+        // Collect the category folders the organization created, then delete the empties
+        Set<Path> createdDirs = new HashSet<>();
+        for (Map<String, String> move : moves) {
+            Path parent = Path.of(move.get("moved")).getParent();
+            if (parent != null && !parent.equals(sourceDir)) {
+                createdDirs.add(parent);
+            }
+        }
+        // Delete bottom-up so nested empties clear first
+        createdDirs.stream()
+                .sorted((a, b) -> b.toString().compareTo(a.toString()))
+                .forEach(d -> {
+                    try {
+                        if (Files.isDirectory(d) && !d.equals(sourceDir) && isDirEmpty(d)) {
+                            Files.delete(d);
+                            log(listener, "[INFO] Removed empty folder: " + d);
+                        }
+                    } catch (IOException ignored) {}
+                });
+    }
+
+    private static boolean isDirEmpty(Path dir) throws IOException {
+        try (Stream<Path> s = Files.list(dir)) {
+            return s.findAny().isEmpty();
         }
     }
 
@@ -516,9 +571,10 @@ public class OrganizerEngine {
     }
 
     private static void log(LogListener listener, String msg) {
-        System.out.println(msg);
         if (listener != null) {
             listener.onLog(msg);
+        } else {
+            System.out.println(msg);
         }
     }
 }

@@ -30,7 +30,7 @@ Version: 1.0.0
 Section: utils
 Priority: optional
 Architecture: all
-Depends: openjdk-17-jre-headless | openjdk-17-jre | openjdk-21-jre-headless | openjdk-21-jre | default-jre
+Depends: default-jre | openjdk-17-jre | openjdk-21-jre | openjdk-11-jre | openjdk-17-jre-headless | openjdk-21-jre-headless | openjdk-11-jre-headless
 Maintainer: Neel Pandey <neelpandeyofficial@gmail.com>
 Description: urFileManager - Terminal-aesthetic bulk file organizer GUI and CLI
  urFileManager (urFM) is a bulk file organizer that categorizes files in a directory by type.
@@ -44,23 +44,8 @@ cp urfm-icon.svg "$DEB_ROOT/usr/share/icons/hicolor/scalable/apps/urfm.svg"
 cp urfm.desktop "$DEB_ROOT/usr/share/applications/"
 cp RELEASE_README.md "$DEB_ROOT/usr/share/doc/urfm/README.md"
 
-# 5. Create launcher script
-cat > "$DEB_ROOT"/usr/local/bin/urfm << 'EOF'
-#!/usr/bin/env bash
-# urfm — urFileManager launcher
-JAVA=""
-for candidate in java /usr/lib/jvm/java-17-openjdk/bin/java /usr/lib/jvm/java-21-openjdk/bin/java /usr/lib/jvm/java-11-openjdk/bin/java; do
-    if command -v "$candidate" &>/dev/null; then
-        JAVA="$candidate"
-        break
-    fi
-done
-if [ -z "$JAVA" ]; then
-    echo "Error: Java 17+ not found. Please install a Java Runtime." >&2
-    exit 1
-fi
-exec "$JAVA" -jar /opt/urfm/urfm.jar "$@"
-EOF
+# 5. Create launcher script (canonical, prefers a headful JDK so the GUI works)
+cp "$SCRIPT_DIR/launcher.sh" "$DEB_ROOT/usr/local/bin/urfm"
 chmod +x "$DEB_ROOT"/usr/local/bin/urfm
 
 # 6. Build the package
@@ -96,11 +81,9 @@ else
     rm -rf "$TEMP_BUILD"
 fi
 
-# 7. Copy to frontend-web public directory
+# 7. Publish to the web download page (copies artifact + updates downloads.json)
 cd "$SCRIPT_DIR"
-mkdir -p ../frontend-web/public
-cp "$SCRIPT_DIR/build/urfm_1.0.0_all.deb" ../frontend-web/public/
-
+bash "$SCRIPT_DIR/publish.sh"
 echo "[4/4] DEB build successful! Created:"
 echo "  $SCRIPT_DIR/build/urfm_1.0.0_all.deb"
 echo "  frontend-web/public/urfm_1.0.0_all.deb"

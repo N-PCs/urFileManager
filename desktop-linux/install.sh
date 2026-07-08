@@ -68,26 +68,7 @@ if [ -f "${SCRIPT_DIR}/../config.json" ]; then
 fi
 
 echo "[3/5] Installing launcher script..."
-cat > "$BIN_PATH" << 'LAUNCHER'
-#!/usr/bin/env bash
-# urfm — urFileManager launcher
-# Tries to find Java and launch the GUI (or CLI if arguments are given)
-JAVA=""
-for candidate in java /usr/lib/jvm/java-17-openjdk/bin/java /usr/lib/jvm/java-21-openjdk/bin/java /usr/lib/jvm/java-11-openjdk/bin/java; do
-    if command -v "$candidate" &>/dev/null; then
-        JAVA="$candidate"
-        break
-    fi
-done
-if [ -z "$JAVA" ]; then
-    echo "Error: Java 17+ not found. Install with:" >&2
-    echo "  Fedora: sudo dnf install java-17-openjdk" >&2
-    echo "  Ubuntu: sudo apt install openjdk-17-jre" >&2
-    echo "  Arch:   sudo pacman -S jre17-openjdk" >&2
-    exit 1
-fi
-exec "$JAVA" -jar /opt/urfm/urfm.jar "$@"
-LAUNCHER
+cp "${SCRIPT_DIR}/launcher.sh" "$BIN_PATH"
 chmod +x "$BIN_PATH"
 
 echo "[4/5] Installing icon..."

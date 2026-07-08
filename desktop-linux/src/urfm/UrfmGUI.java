@@ -60,8 +60,8 @@ public class UrfmGUI extends JFrame {
 
         initComponents();
         
-        // Apply Terminal Green theme by default
-        applyTheme("Terminal Green");
+        // Apply the "Volt" theme (matches the frontend-web brand) by default
+        applyTheme("Volt");
     }
 
     private void initComponents() {
@@ -106,7 +106,7 @@ public class UrfmGUI extends JFrame {
         dryRunCheck = new JCheckBox("Dry-Run Preview (simulates file moves safely)", true);
         
         themeCombo = new JComboBox<>(new String[]{
-                "Terminal Green", "Amber Monitor", "White on Dark", "Blue Matrix", "Red Alert"
+                "Volt", "Amber Monitor", "White on Dark", "Blue Matrix", "Red Alert"
         });
         themeCombo.addActionListener(e -> {
             String theme = (String) themeCombo.getSelectedItem();
@@ -371,11 +371,11 @@ public class UrfmGUI extends JFrame {
             currentFg = new Color(0xff, 0x33, 0x33);
             currentCompBg = new Color(0x25, 0x0a, 0x0a);
             currentBorderCol = new Color(0xff, 0x33, 0x33);
-        } else { // Terminal Green (Default)
-            currentBg = new Color(0x12, 0x12, 0x12);
-            currentFg = new Color(0x00, 0xff, 0x41);
-            currentCompBg = new Color(0x1c, 0x1c, 0x1c);
-            currentBorderCol = new Color(0x00, 0xff, 0x41);
+        } else { // Volt (default) — matches frontend-web brand: obsidian, off-white, volt accent
+            currentBg = new Color(0x0a, 0x0a, 0x0c);   // #0a0a0c obsidian
+            currentFg = new Color(0xfb, 0xfb, 0xfb);   // #fbfbfb off-white
+            currentCompBg = new Color(0x12, 0x12, 0x14); // #121214 elevated panel
+            currentBorderCol = new Color(0xdc, 0xf3, 0x65); // #dcf365 volt accent
         }
 
         // Apply theme recursively

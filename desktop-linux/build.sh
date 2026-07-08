@@ -58,26 +58,7 @@ jar cfm ../urfm.jar ../MANIFEST.MF urfm/*.class
 cd ..
 
 echo "[4/6] Making launcher script..."
-cat > urfm << 'LAUNCHER'
-#!/usr/bin/env bash
-# urfm — urFileManager launcher
-DIR="$(cd "$(dirname "$0")" && pwd)"
-JAVA=""
-for candidate in java /usr/lib/jvm/java-17-openjdk/bin/java /usr/lib/jvm/java-21-openjdk/bin/java /usr/lib/jvm/java-11-openjdk/bin/java; do
-    if command -v "$candidate" &>/dev/null; then
-        JAVA="$candidate"
-        break
-    fi
-done
-if [ -z "$JAVA" ]; then
-    echo "Error: Java 17+ not found. Install with:"
-    echo "  Fedora: sudo dnf install java-17-openjdk"
-    echo "  Ubuntu: sudo apt install openjdk-17-jre"
-    echo "  Arch:   sudo pacman -S jre17-openjdk"
-    exit 1
-fi
-exec "$JAVA" -jar "$DIR/urfm.jar" "$@"
-LAUNCHER
+cp launcher.sh urfm
 chmod +x urfm
 
 echo "[5/6] Copying desktop integration files..."
