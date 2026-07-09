@@ -11,29 +11,72 @@ A cross-platform file organizer that sorts cluttered folders into categorized su
 
 ## Features
 
-- **Smart sorting** — moves files into category folders by extension (rules in `config.json`)
-- **Dry-run preview** — see every move before committing, safe by default
-- **PDF reports** — detailed report with file names, sizes, and status
-- **Audit log** — every action recorded in `organizer.log`
-- **Conflict resolution** — duplicates renamed automatically (e.g. `report (1).pdf`)
-- **Six GUI themes** — Midnight Dark, Minimalist Light, Red Sakura, Forest Emerald, Neon Cyberpunk, Obsidian Volt
-- **Editable config** — add or remove file types in `config.json`, no recompile
-- **GUI + CLI** — double-click for GUI or pass a folder path from the terminal
+- **Smart Extension Sorting** — Moves loose files into category folders based on customizable rules in `config.json`
+- **Dry-Run Preview** — Preview every move before committing (enabled by default for safety)
+- **PDF Reports** — Generate detailed organization reports with file names, sizes, and status
+- **Full Audit Logging** — Every action recorded in `organizer.log` with timestamps
+- **Conflict Resolution** — Duplicates renamed automatically (e.g. `report (1).pdf`)
+- **Six UI Themes** — Midnight Dark, Minimalist Light, Red Sakura, Forest Emerald, Neon Cyberpunk, Obsidian Volt
+- **Editable Config** — Add file types or categories via `config.json` — no recompile needed
+- **GUI + CLI Modes** — Double-click for the GUI, or pass a folder path for scripting
+
+## Project Structure
+
+```
+├── frontend-web/              # React + Vite marketing site
+│   ├── src/
+│   └── public/
+├── desktop-windows/          # Desktop GUI applications
+│   ├── gui_win32.cpp          # Windows native Win32 GUI (C++)
+│   ├── gui_fltk.cpp           # Cross-platform FLTK GUI (C++, Linux)
+│   ├── gui.cpp                # GUI redirect (platform dispatch)
+│   ├── core.h / core.cpp      # Shared cross-platform logic
+│   ├── build.bat              # Windows build script
+│   ├── build.sh               # Linux build script
+│   ├── ufmgr.bat              # Windows CLI wrapper
+│   ├── run.bat                # Windows GUI launcher
+│   ├── ufmgr.rc               # Windows resource file
+│   └── ufmgr.manifest         # Windows manifest
+├── desktop-linux/                # Linux Java Swing GUI (terminal aesthetic)
+│   ├── src/urfm/              # Java sources
+│   ├── build.sh               # Java build script
+│   ├── MANIFEST.MF            # JAR manifest
+│   └── RELEASE_README.md      # Quick start
+├── organizer.py               # Python CLI (cross-platform)
+├── config.json                # Sorting rules configuration
+├── scripts/                   # Release automation
+└── release/                   # Release binaries
+```
+
+## Workflow Diagram
+![workflow-diagram](workflow.png)
 
 ## Quick Start
 
 ### Windows
 
-```bat
-cd desktop-windows
-build.bat                              # compile (requires MinGW-w64)
-ufmgr.exe                              # launch GUI
-ufmgr-cli.exe "C:\Downloads"           # preview (safe)
-ufmgr-cli.exe "C:\Downloads" --no-dry-run  # execute
-ufmgr-cli.exe --revert "C:\Downloads"  # undo
+1. Download `urfm-windows.zip` from the [website](https://urfilemanager.vercel.app) or via CLI:
+
+```powershell
+# PowerShell
+Invoke-WebRequest -Uri "https://urfilemanager.vercel.app/urfm-windows.zip" -OutFile "urfm-windows.zip"
 ```
 
-### Linux (Java)
+```cmd
+curl -L -o urfm-windows.zip "https://urfilemanager.vercel.app/urfm-windows.zip"
+```
+
+2. Extract anywhere
+3. Double-click `run.bat` to launch the GUI, or use:
+
+```powershell
+.\ufmgr.exe C:\Downloads --dry-run
+```
+
+### Linux (Fedora RPM — recommended)
+
+1. Download the `urfm-1.0.0-1.noarch.rpm` package.
+2. Install the package:
 
 ```bash
 cd desktop-linux
@@ -78,31 +121,44 @@ python organizer.py ~/Downloads --revert
 
 ## Building from Source
 
-| Platform | Command | Requirements |
-|----------|---------|-------------|
-| Windows | `cd desktop-windows && build.bat` | MinGW-w64 with windres |
-| Linux (Java) | `cd desktop-linux && ./build.sh` | JDK 17+ |
-| Python | `pip install -r requirements.txt` | Python 3.8+ |
+### Windows (native Win32 GUI)
 
-## Configuration
+Requires MinGW-w64 with `windres`.
 
-Edit `config.json` to customize rules:
-
-```json
-{
-  "Images": [".jpeg", ".jpg", ".png", ".gif", ".bmp"],
-  "Documents": [".pdf", ".docx", ".txt", ".pptx", ".xlsx"],
-  "Audio": [".mp3", ".wav", ".aac", ".flac"],
-  "Video": [".mp4", ".mov", ".avi", ".mkv", ".webm"],
-  "Archives": [".zip", ".rar", ".tar", ".gz", ".7z"]
-}
+```cmd
+cd desktop-windows
+build.bat
 ```
 
-Unrecognized extensions go into `Other/`.
+### Linux — Java Terminal Edition
 
-## Releases
+```bash
+cd desktop-linux
+chmod +x build.sh
+./build.sh
+# Produces urfm.jar + urfm launcher
+```
 
-Release archives and the manifest (`downloads.json`) live in `frontend-web/public/`.
+### Linux — FLTK GUI (alternative)
+
+```bash
+cd desktop-windows
+chmod +x build.sh
+./build.sh
+```
+
+### Python (cross-platform CLI)
+
+Works on all platforms without compilation.
+
+```bash
+pip install tqdm
+python organizer.py ~/Downloads
+```
+
+## Releasing (website downloads)
+
+Release archives must live in `frontend-web/public/` so Vite copies them into the deployed site.
 
 ```powershell
 .\scripts\package-release.ps1   # builds Windows zip + Linux tarball

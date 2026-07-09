@@ -6,7 +6,8 @@ const docSections = [
   { id: 'introduction', title: 'Introduction' },
   { id: 'cli-download', title: 'CLI Download Guide' },
   { id: 'package-managers', title: 'Package Manager Install' },
-  { id: 'running-app', title: 'Running & CLI Usage' },
+  { id: 'windows-guide', title: 'Windows (GUI + CLI)' },
+  { id: 'linux-guide', title: 'Linux (GUI + CLI)' },
   { id: 'configuration', title: 'Custom Configuration' },
 ]
 
@@ -103,14 +104,14 @@ export default function Docs() {
               <div className="code-block-wrapper">
                 <span className="code-title">PowerShell</span>
                 <pre>
-                  <code>Invoke-WebRequest -Uri "https://urfilemanager.dev/urfm-windows.zip" -OutFile "urfm-windows.zip"</code>
+                  <code>Invoke-WebRequest -Uri "https://urfilemanager.vercel.app/urfm-windows.zip" -OutFile "urfm-windows.zip"</code>
                 </pre>
               </div>
 
               <div className="code-block-wrapper">
                 <span className="code-title">Command Prompt (CMD)</span>
                 <pre>
-                  <code>curl -L -o urfm-windows.zip "https://urfilemanager.dev/urfm-windows.zip"</code>
+                  <code>curl -L -o urfm-windows.zip "https://urfilemanager.vercel.app/urfm-windows.zip"</code>
                 </pre>
               </div>
             </div>
@@ -122,7 +123,7 @@ export default function Docs() {
               <div className="code-block-wrapper">
                 <span className="code-title">Bash Terminal</span>
                 <pre>
-                  <code>curl -LO "https://urfilemanager.dev/urfm-linux.tar.gz"</code>
+                  <code>curl -LO "https://urfilemanager.vercel.app/urfm-linux.tar.gz"</code>
                 </pre>
               </div>
             </div>
@@ -160,25 +161,84 @@ export default function Docs() {
             </div>
           </section>
 
-          {/* Section: Running the Application */}
-          <section id="running-app" className="docs-sec">
-            <h2 className="docs-section-title">3. Running & CLI Usage</h2>
-            
+          {/* Section: Windows Guide */}
+          <section id="windows-guide" className="docs-sec">
+            <h2 className="docs-section-title">3. Windows — GUI &amp; CLI</h2>
+            <p className="docs-paragraph">
+              The Windows build ships two binaries: <code>ufmgr.exe</code> (native Win32 GUI) and <code>ufmgr-cli.exe</code> (command-line interface). Both read <code>config.json</code> from their own folder.
+            </p>
+
             <div className="docs-sub-sec">
-              <h3>Running the GUI</h3>
+              <h3>GUI (<code>ufmgr.exe</code>)</h3>
               <ul>
-                <li><strong>Windows:</strong> Extract the ZIP and double-click <code>run.bat</code> or run <code>ufmgr.exe</code>.</li>
-                <li><strong>Linux (Tarball):</strong> Extract, run <code>chmod +x urfm</code>, then run <code>./urfm</code>.</li>
-                <li><strong>Linux (RPM/DEB):</strong> Launch "urFileManager" from your system app menu, or run <code>urfm</code> in a terminal.</li>
+                <li>Extract the ZIP and double-click <code>run.bat</code> or <code>ufmgr.exe</code>.</li>
+                <li>Click <strong>Browse</strong>, pick a folder, then <strong>Start Organizing</strong>.</li>
+                <li><strong>Dry Run</strong> is checked by default — uncheck it to actually move files.</li>
+                <li>Use <strong>Undo Last Organize</strong> to revert (also removes the generated PDF and empty category folders).</li>
+                <li>Switch themes and view the audit log from the GUI.</li>
               </ul>
             </div>
 
             <div className="docs-sub-sec">
-              <h3>Command-line Interface (CLI)</h3>
+              <h3>CLI (<code>ufmgr-cli.exe</code>)</h3>
+              <p className="docs-paragraph">
+                The CLI defaults to a safe <strong>dry-run preview</strong>. Run it from a terminal in the extracted folder. Both <code>--flag</code> and <code>-flag</code> styles are accepted.
+              </p>
+              <div className="table-responsive">
+                <table className="docs-table">
+                  <thead>
+                    <tr>
+                      <th>Command</th>
+                      <th>Description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><code>ufmgr-cli.exe "C:\Downloads"</code></td>
+                      <td>Preview organization (safe — nothing moved). Dry-run is the default.</td>
+                    </tr>
+                    <tr>
+                      <td><code>ufmgr-cli.exe "C:\Downloads" --no-dry-run</code></td>
+                      <td>Actually move the files into category folders.</td>
+                    </tr>
+                    <tr>
+                      <td><code>ufmgr-cli.exe --revert "C:\Downloads"</code></td>
+                      <td>Undo a previous organization of that folder.</td>
+                    </tr>
+                    <tr>
+                      <td><code>ufmgr-cli.exe -h</code></td>
+                      <td>Show help.</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <p className="docs-paragraph">
+                Output is color-coded (<code>[DRY-RUN]</code>, <code>[MOVED]</code>, <code>[ERROR]</code>) and writes <code>organizer.log</code> plus a PDF report into the target folder.
+              </p>
+            </div>
+          </section>
+
+          {/* Section: Linux Guide */}
+          <section id="linux-guide" className="docs-sec">
+            <h2 className="docs-section-title">4. Linux — GUI &amp; CLI</h2>
+            <p className="docs-paragraph">
+              The Linux build is a Java Swing application launched via <code>urfm</code> (from the tarball) or globally after installing the RPM/DEB.
+            </p>
+
+            <div className="docs-sub-sec">
+              <h3>GUI (<code>urfm</code>)</h3>
+              <ul>
+                <li><strong>Tarball:</strong> <code>tar -xzf urfm-linux.tar.gz &amp;&amp; cd urfm-linux &amp;&amp; chmod +x urfm &amp;&amp; ./urfm</code></li>
+                <li><strong>RPM/DEB:</strong> Launch <strong>urFileManager</strong> from the app menu, or run <code>urfm</code> in a terminal.</li>
+                <li>A headful JDK/JRE is required — the <code>urfm</code> launcher automatically prefers <code>java-latest-openjdk</code> and prints a clear fix message otherwise.</li>
+              </ul>
+            </div>
+
+            <div className="docs-sub-sec">
+              <h3>CLI (<code>urfm</code>)</h3>
               <p className="docs-paragraph">
                 Organize directories from the command line by supplying the target path. Use flags for advanced controls:
               </p>
-              
               <div className="table-responsive">
                 <table className="docs-table">
                   <thead>
@@ -191,13 +251,18 @@ export default function Docs() {
                   <tbody>
                     <tr>
                       <td><code>--dry-run</code></td>
-                      <td>Runs simulation. Outputs files that would be moved without editing the filesystem.</td>
+                      <td>Preview moves &amp; generate a preview PDF without editing the filesystem.</td>
                       <td><code>urfm ~/Downloads --dry-run</code></td>
                     </tr>
                     <tr>
                       <td><code>--revert</code></td>
-                      <td>Undoes the last file reorganization on the folder by moving files back to their original places.</td>
+                      <td>Undoes the last organization on the folder (moves files back, cleans up).</td>
                       <td><code>urfm ~/Downloads --revert</code></td>
+                    </tr>
+                    <tr>
+                      <td><code>--gui</code></td>
+                      <td>Launch the Java Swing graphical interface.</td>
+                      <td><code>urfm --gui</code></td>
                     </tr>
                     <tr>
                       <td><code>--version</code></td>
@@ -212,28 +277,25 @@ export default function Docs() {
 
           {/* Section: Custom Configuration */}
           <section id="configuration" className="docs-sec">
-            <h2 className="docs-section-title">4. Custom Configuration</h2>
+            <h2 className="docs-section-title">5. Custom Configuration</h2>
             <p className="docs-paragraph">
-              Both the C++ and Java versions read sorting definitions from <code>config.json</code> (placed in the same folder as `urfm.jar` or in `/opt/urfm/`). You can customize destination folders and file extension mappings.
+              Both the C++ (Windows) and Java (Linux) versions read sorting definitions from <code>config.json</code> — placed next to the executable (Windows) or next to <code>urfm.jar</code> / its parent / the current directory (Linux). Map each category name to a list of lowercase extensions:
             </p>
             
             <div className="code-block-wrapper">
               <span className="code-title">config.json (Example)</span>
               <pre>
                 <code>{`{
-  "categories": {
-    "Images": [".jpg", ".jpeg", ".png", ".gif", ".webp", ".svg"],
-    "Documents": [".pdf", ".docx", ".doc", ".txt", ".xlsx", ".pptx"],
-    "Audio": [".mp3", ".wav", ".aac", ".flac", ".m4a"],
-    "Video": [".mp4", ".mkv", ".mov", ".avi", ".webm"],
-    "Archives": [".zip", ".tar.gz", ".rar", ".7z", ".tar"]
-  },
-  "default_folder": "Other"
+  "Images": [".jpg", ".jpeg", ".png", ".gif", ".webp", ".svg"],
+  "Documents": [".pdf", ".docx", ".doc", ".txt", ".xlsx", ".pptx"],
+  "Audio": [".mp3", ".wav", ".aac", ".flac", ".m4a"],
+  "Video": [".mp4", ".mkv", ".mov", ".avi", ".webm"],
+  "Archives": [".zip", ".tar.gz", ".rar", ".7z", ".tar"]
 }`}</code>
               </pre>
             </div>
             <div className="docs-tip">
-              <strong>Tip:</strong> If you add custom file extensions, restart the application or re-run the CLI command to reload the rules instantly!
+              <strong>Tip:</strong> Files with unrecognized extensions land in an <code>Other/</code> folder. After editing <code>config.json</code>, re-run the CLI or restart the GUI to reload the rules.
             </div>
           </section>
 

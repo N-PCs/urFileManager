@@ -54,7 +54,7 @@ export default function Footer() {
             <img src="./logo.png" alt="urFM logo" className="footer-logo-img" />
             urFM
           </span>
-          <p className="footer-tagline">Smart file organization for Windows (C++) &amp; Linux (Java).</p>
+          <p className="footer-tagline">Smart file organization for Windows (C++) &amp; Linux (Java). Both via GUI &amp; CLI.</p>
         </div>
 
         <div className="footer-links" style={{ color: "var(--primary)" }}>
@@ -66,7 +66,7 @@ export default function Footer() {
         </div>
 
         <p className="footer-copy">
-          © {new Date().getFullYear()} urFileManager. Native C++, fully offline, no tracking.
+          © {new Date().getFullYear()} urFileManager.
           <span className="footer-credit">
             {' '}Made with 💛 by{' '}
             <a href="https://github.com/N-PCs" target="_blank" rel="noopener noreferrer">

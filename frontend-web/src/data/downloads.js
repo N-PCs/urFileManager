@@ -1,4 +1,4 @@
-export const VERSION = '2.0.0'
+export const VERSION = '1.0.0'
 
 export const platforms = [
   {
@@ -23,7 +23,7 @@ export const platforms = [
       Dependencies: 'None',
       'Install type': 'Portable',
     },
-    usageCli: ['.\\run.bat          # Launch GUI', '.\\ufmgr.bat C:\\Downloads  # Preview (safe)', '.\\ufmgr.bat C:\\Downloads --no-dry-run  # Execute', '.\\ufmgr.bat --revert C:\\Downloads  # Undo'],
+    usageCli: ['.\\run.bat              # Launch GUI', '.\\ufmgr-cli.exe C:\\Downloads           # Preview (safe, default)', '.\\ufmgr-cli.exe C:\\Downloads --no-dry-run  # Execute', '.\\ufmgr-cli.exe --revert C:\\Downloads        # Undo'],
   },
   {
     id: 'linux',

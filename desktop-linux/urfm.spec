@@ -5,7 +5,8 @@ Summary:        urFileManager - Terminal-aesthetic bulk file organizer GUI and C
 License:        MIT
 URL:            https://github.com/N-PCs/urFileManager
 BuildArch:      noarch
-Requires:       (java-17-openjdk-headless or java-21-openjdk-headless or java-11-openjdk-headless or java-latest-openjdk-headless)
+# Prefer a full (headful) JDK so the Swing GUI works; headless is accepted for CLI-only use.
+Requires:       (java-latest-openjdk or java-17-openjdk or java-21-openjdk or java-11-openjdk or java-latest-openjdk-headless or java-17-openjdk-headless or java-21-openjdk-headless or java-11-openjdk-headless)
 
 %description
 urFileManager (urFM) is a terminal-inspired bulk file organizer that organizes files in a directory by type (Images, Documents, Audio, Video, etc.). It features a Swing-based Java GUI and a CLI mode.
@@ -32,20 +33,46 @@ cp %{_sourcedir}/RELEASE_README.md %{buildroot}/usr/share/doc/urfm/README.md
 cat > %{buildroot}/usr/local/bin/urfm << 'EOF'
 #!/usr/bin/env bash
 # urfm — urFileManager launcher
+# Prefers a headful JDK so the Swing GUI can start; falls back to any java for CLI.
+DIR="$(cd "$(dirname "$0")" && pwd)"
+
+CANDIDATES=(
+    /usr/lib/jvm/java-latest-openjdk/bin/java
+    /usr/lib/jvm/java-21-openjdk/bin/java
+    /usr/lib/jvm/java-17-openjdk/bin/java
+    /usr/lib/jvm/java-11-openjdk/bin/java
+    java
+)
+
 JAVA=""
-for candidate in java /usr/lib/jvm/java-17-openjdk/bin/java /usr/lib/jvm/java-21-openjdk/bin/java /usr/lib/jvm/java-11-openjdk/bin/java; do
+for candidate in "${CANDIDATES[@]}"; do
     if command -v "$candidate" &>/dev/null; then
-        JAVA="$candidate"
-        break
+        if [[ "$candidate" == "java" ]]; then
+            JHOME="$(dirname "$(dirname "$(readlink -f "$(command -v java)")")")"
+        else
+            JHOME="$(dirname "$(dirname "$(readlink -f "$candidate")")")"
+        fi
+        if [[ -f "$JHOME/lib/libawt_xawt.so" || -f "$JHOME/lib/libawt.so" ]]; then
+            JAVA="$candidate"
+            break
+        fi
     fi
 done
+
+if [ -z "$JAVA" ]; then
+    if command -v java &>/dev/null; then
+        JAVA="java"
+    fi
+fi
+
 if [ -z "$JAVA" ]; then
     echo "Error: Java 17+ not found. Install with:" >&2
-    echo "  Fedora: sudo dnf install java-17-openjdk" >&2
+    echo "  Fedora: sudo dnf install java-latest-openjdk" >&2
     echo "  Ubuntu: sudo apt install openjdk-17-jre" >&2
     echo "  Arch:   sudo pacman -S jre17-openjdk" >&2
     exit 1
 fi
+
 exec "$JAVA" -jar /opt/urfm/urfm.jar "$@"
 EOF
 chmod +x %{buildroot}/usr/local/bin/urfm
