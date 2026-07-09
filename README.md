@@ -16,6 +16,7 @@ A cross-platform bulk file organizer that sorts cluttered folders into neat cate
 ## Table of Contents
 
 - [Features](#-features)
+- [Workflow](#workflow)
 - [Project Structure](#-project-structure)
 - [Download](#-download)
   - [Via Command Line](#via-command-line)
@@ -47,6 +48,10 @@ A cross-platform bulk file organizer that sorts cluttered folders into neat cate
 - **GUI + CLI Modes** — Double-click for the GUI, or pass a folder path to the CLI for scripting.
 - **Undo / Revert** — Reverts the last organization, moving files back and cleaning up the category folders and PDF reports.
 - **Color-Coded Output** — Status-aware console colors (`[DRY-RUN]`, `[MOVED]`, `[ERROR]`) that auto-disable when piped or when `NO_COLOR` is set.
+
+---
+## Workflow Diagram
+![workflow] (/workflow.svg)
 
 ---
 

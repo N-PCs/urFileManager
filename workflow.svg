@@ -1,0 +1,247 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="775" height="500" viewBox="0 0 1400 900" font-family="'Segoe UI', Roboto, Helvetica, Arial, sans-serif">
+  <defs>
+    <pattern id="bg" width="20" height="20" patternUnits="userSpaceOnUse">
+      <circle cx="10" cy="10" r="0.6" fill="#1e293b"/>
+    </pattern>
+    <filter id="sh">
+      <feDropShadow dx="0" dy="2" stdDeviation="4" flood-color="#000" flood-opacity="0.4"/>
+    </filter>
+    <marker id="arr" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#64748b"/>
+    </marker>
+    <marker id="arrG" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#4ade80"/>
+    </marker>
+    <marker id="arrB" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#60a5fa"/>
+    </marker>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1400" height="900" fill="#0f172a"/>
+  <rect width="1400" height="900" fill="url(#bg)"/>
+
+  <!-- Title -->
+  <text x="700" y="42" text-anchor="middle" font-size="28" font-weight="800" fill="#f1f5f9">urFileManager (urFM) — Organizer Workflow</text>
+  <line x1="380" y1="56" x2="1020" y2="56" stroke="#334155" stroke-width="1"/>
+
+  <!-- ===================== SECTION 1: ENTRY POINTS ===================== -->
+  <g transform="translate(40,280)">
+    <rect width="310" height="210" rx="14" fill="#1e293b" stroke="#334155" filter="url(#sh)"/>
+    <text x="155" y="28" text-anchor="middle" font-size="14" font-weight="700" fill="#94a3b8" letter-spacing="1.2">ENTRY POINTS</text>
+    <line x1="16" y1="40" x2="294" y2="40" stroke="#334155"/>
+
+    <!-- Start button -->
+    <rect x="16" y="50" width="278" height="42" rx="8" fill="#0f172a" stroke="#334155"/>
+    <circle cx="38" cy="71" r="10" fill="#4ade80" opacity="0.3"/>
+    <polygon points="35,66 35,76 44,71" fill="#4ade80"/>
+    <text x="56" y="76" font-size="15" font-weight="700" fill="#f1f5f9">START: Trigger / Run</text>
+
+    <!-- CLI -->
+    <rect x="16" y="102" width="130" height="48" rx="8" fill="#1a2332" stroke="#fb923c"/>
+    <text x="81" y="122" text-anchor="middle" font-size="12" font-weight="700" fill="#fb923c">CLI: urfm / ufmgr-cli</text>
+    <text x="81" y="138" text-anchor="middle" font-size="10" fill="#d97706">command line</text>
+
+    <!-- GUI -->
+    <rect x="164" y="102" width="130" height="48" rx="8" fill="#1a2332" stroke="#fb923c"/>
+    <text x="229" y="122" text-anchor="middle" font-size="12" font-weight="700" fill="#fb923c">GUI: urfmGUI / ufmgr</text>
+    <text x="229" y="138" text-anchor="middle" font-size="10" fill="#d97706">desktop app</text>
+
+    <!-- Web -->
+    <rect x="16" y="160" width="278" height="40" rx="8" fill="#172033" stroke="#60a5fa"/>
+    <text x="155" y="185" text-anchor="middle" font-size="12" font-weight="700" fill="#60a5fa">Web Frontend (React + Vite)</text>
+  </g>
+
+  <!-- Arrow: Entry -> Dispatcher -->
+  <line x1="350" y1="385" x2="420" y2="385" stroke="#64748b" stroke-width="2" marker-end="url(#arr)"/>
+
+  <!-- ===================== SECTION 2: DISPATCHER ===================== -->
+  <g transform="translate(420,315)">
+    <rect width="170" height="140" rx="14" fill="#0f172a" stroke="#334155" stroke-width="1.5" filter="url(#sh)"/>
+    <text x="85" y="50" text-anchor="middle" font-size="30" fill="#60a5fa">⚙</text>
+    <text x="85" y="76" text-anchor="middle" font-size="17" font-weight="800" fill="#f1f5f9">DISPATCHER</text>
+    <text x="85" y="96" text-anchor="middle" font-size="16" font-weight="800" fill="#f1f5f9">ENGINE</text>
+    <text x="85" y="120" text-anchor="middle" font-size="11" fill="#94a3b8">routes to subsystems</text>
+  </g>
+
+  <!-- Arrow: Dispatcher -> Subsystems -->
+  <line x1="590" y1="385" x2="640" y2="385" stroke="#64748b" stroke-width="2" marker-end="url(#arr)"/>
+
+  <!-- ===================== SECTION 3: SUBSYSTEMS ===================== -->
+  <g transform="translate(640,100)">
+    <rect width="340" height="500" rx="14" fill="#1e293b" stroke="#334155" filter="url(#sh)"/>
+    <text x="170" y="28" text-anchor="middle" font-size="14" font-weight="700" fill="#94a3b8" letter-spacing="1.2">SUBSYSTEMS</text>
+    <line x1="16" y1="40" x2="324" y2="40" stroke="#334155"/>
+
+    <!-- Config Parser -->
+    <rect x="16" y="50" width="308" height="50" rx="8" fill="#1a1c2e" stroke="#f59e0b"/>
+    <circle cx="38" cy="75" r="14" fill="#f59e0b"/>
+    <text x="38" y="80" text-anchor="middle" font-size="14" fill="#fff">⚙</text>
+    <text x="60" y="72" font-size="13" font-weight="700" fill="#fbbf24">CONFIG PARSER</text>
+    <text x="60" y="88" font-size="11" fill="#d4a017">Loads config.json — extensions &amp; rules</text>
+
+    <!-- File Scanner -->
+    <rect x="16" y="110" width="308" height="50" rx="8" fill="#172033" stroke="#60a5fa"/>
+    <circle cx="38" cy="135" r="14" fill="#3b82f6"/>
+    <text x="38" y="140" text-anchor="middle" font-size="14" fill="#fff">🔍</text>
+    <text x="60" y="132" font-size="13" font-weight="700" fill="#60a5fa">FILE SCANNER</text>
+    <text x="60" y="148" font-size="11" fill="#7cb3f5">Walks directory, reads file extensions</text>
+
+    <!-- Category Mapper -->
+    <rect x="16" y="170" width="308" height="50" rx="8" fill="#1a1830" stroke="#a78bfa"/>
+    <circle cx="38" cy="195" r="14" fill="#8b5cf6"/>
+    <text x="38" y="200" text-anchor="middle" font-size="14" fill="#fff">📂</text>
+    <text x="60" y="192" font-size="13" font-weight="700" fill="#a78bfa">CATEGORY MAPPER</text>
+    <text x="60" y="208" font-size="11" fill="#c4b5fd">Matches files to category folders</text>
+
+    <!-- Conflict Resolution -->
+    <rect x="16" y="230" width="308" height="50" rx="8" fill="#1f1728" stroke="#f472b6"/>
+    <circle cx="38" cy="255" r="14" fill="#ec4899"/>
+    <text x="38" y="260" text-anchor="middle" font-size="14" fill="#fff">⚡</text>
+    <text x="60" y="252" font-size="13" font-weight="700" fill="#f472b6">CONFLICT RESOLUTION</text>
+    <text x="60" y="268" font-size="11" fill="#f9a8d4">Renames duplicates — report (1).pdf</text>
+
+    <!-- Logging -->
+    <rect x="16" y="290" width="308" height="50" rx="8" fill="#0f2318" stroke="#4ade80"/>
+    <circle cx="38" cy="315" r="14" fill="#22c55e"/>
+    <text x="38" y="320" text-anchor="middle" font-size="14" fill="#fff">📋</text>
+    <text x="60" y="312" font-size="13" font-weight="700" fill="#4ade80">LOGGING</text>
+    <text x="60" y="328" font-size="11" fill="#86efac">Writes organizer.log — timestamped</text>
+
+    <!-- Report -->
+    <rect x="16" y="350" width="308" height="50" rx="8" fill="#1c1a10" stroke="#facc15"/>
+    <circle cx="38" cy="375" r="14" fill="#eab308"/>
+    <text x="38" y="380" text-anchor="middle" font-size="14" fill="#fff">📄</text>
+    <text x="60" y="372" font-size="13" font-weight="700" fill="#facc15">REPORT</text>
+    <text x="60" y="388" font-size="11" fill="#fde047">Creates detailed PDF report</text>
+
+    <!-- Undo/Revert -->
+    <rect x="16" y="410" width="308" height="50" rx="8" fill="#0f2318" stroke="#4ade80"/>
+    <circle cx="38" cy="435" r="14" fill="#22c55e"/>
+    <text x="38" y="440" text-anchor="middle" font-size="14" fill="#fff">↺</text>
+    <text x="60" y="432" font-size="13" font-weight="700" fill="#4ade80">UNDO / REVERT</text>
+    <text x="60" y="448" font-size="11" fill="#86efac">Saves organize_undo.json</text>
+  </g>
+
+  <!-- ===================== SECTION 4: MODE SELECTOR ===================== -->
+  <g transform="translate(1040,280)">
+    <!-- Dry Run -->
+    <rect width="170" height="90" rx="14" fill="#1e293b" stroke="#60a5fa" stroke-width="2" filter="url(#sh)"/>
+    <circle cx="26" cy="26" r="14" fill="#3b82f6"/>
+    <text x="26" y="31" text-anchor="middle" font-size="14" fill="#fff">✓</text>
+    <text x="48" y="30" font-size="13" font-weight="700" fill="#60a5fa">DRY RUN MODE</text>
+    <text x="18" y="54" font-size="11" fill="#94a3b8">No actual moves</text>
+    <text x="18" y="70" font-size="11" fill="#94a3b8">Only logs &amp; PDF preview</text>
+
+    <!-- Live Mode -->
+    <rect y="104" width="170" height="90" rx="14" fill="#1e293b" stroke="#4ade80" stroke-width="2" filter="url(#sh)"/>
+    <circle cx="26" cy="130" r="14" fill="#22c55e"/>
+    <text x="26" y="135" text-anchor="middle" font-size="14" fill="#fff">⚡</text>
+    <text x="48" y="134" font-size="13" font-weight="700" fill="#4ade80">LIVE MODE</text>
+    <text x="18" y="158" font-size="11" fill="#94a3b8">Detailed move actions</text>
+    <text x="18" y="174" font-size="11" fill="#94a3b8">Files are organized</text>
+  </g>
+
+  <!-- Arrows: Subsystems -> Mode -->
+  <line x1="980" y1="385" x2="1040" y2="325" stroke="#60a5fa" stroke-width="2" marker-end="url(#arrB)"/>
+  <line x1="980" y1="385" x2="1040" y2="434" stroke="#4ade80" stroke-width="2" marker-end="url(#arrG)"/>
+
+  <!-- Labels on arrows -->
+  <text x="996" y="345" font-size="12" font-weight="700" fill="#60a5fa">DRY-RUN</text>
+  <text x="996" y="460" font-size="12" font-weight="700" fill="#4ade80">LIVE</text>
+
+  <!-- ===================== SECTION 5: OUTPUT CATEGORIES ===================== -->
+  <g transform="translate(1240,240)">
+    <rect width="150" height="370" rx="14" fill="#1e293b" stroke="#334155" filter="url(#sh)"/>
+    <text x="75" y="28" text-anchor="middle" font-size="14" font-weight="700" fill="#94a3b8" letter-spacing="1.2">OUTPUT</text>
+    <line x1="12" y1="40" x2="138" y2="40" stroke="#334155"/>
+
+    <!-- Images -->
+    <rect x="12" y="50" width="126" height="42" rx="8" fill="#0f2318" stroke="#4ade80"/>
+    <text x="75" y="66" text-anchor="middle" font-size="12" font-weight="700" fill="#4ade80">🖼 Images Folder</text>
+    <text x="75" y="82" text-anchor="middle" font-size="10" fill="#86efac">*.jpg, *.png...</text>
+
+    <!-- Documents -->
+    <rect x="12" y="100" width="126" height="42" rx="8" fill="#172033" stroke="#60a5fa"/>
+    <text x="75" y="116" text-anchor="middle" font-size="12" font-weight="700" fill="#60a5fa">📄 Documents Folder</text>
+    <text x="75" y="132" text-anchor="middle" font-size="10" fill="#7cb3f5">*.pdf, *.docx...</text>
+
+    <!-- Audio -->
+    <rect x="12" y="150" width="126" height="42" rx="8" fill="#1a1830" stroke="#a78bfa"/>
+    <text x="75" y="166" text-anchor="middle" font-size="12" font-weight="700" fill="#a78bfa">🎵 Audio Folder</text>
+    <text x="75" y="182" text-anchor="middle" font-size="10" fill="#c4b5fd">*.mp3, *.wav...</text>
+
+    <!-- Video -->
+    <rect x="12" y="200" width="126" height="42" rx="8" fill="#1a2332" stroke="#fb923c"/>
+    <text x="75" y="216" text-anchor="middle" font-size="12" font-weight="700" fill="#fb923c">🎬 Video Folder</text>
+    <text x="75" y="232" text-anchor="middle" font-size="10" fill="#fdba74">*.mp4, *.mkv...</text>
+
+    <!-- Archives -->
+    <rect x="12" y="250" width="126" height="42" rx="8" fill="#1c1a10" stroke="#facc15"/>
+    <text x="75" y="266" text-anchor="middle" font-size="12" font-weight="700" fill="#facc15">📦 Archives Folder</text>
+    <text x="75" y="282" text-anchor="middle" font-size="10" fill="#fde047">*.zip, *.tar.gz...</text>
+
+    <!-- Other -->
+    <rect x="12" y="300" width="126" height="42" rx="8" fill="#1e293b" stroke="#64748b"/>
+    <text x="75" y="316" text-anchor="middle" font-size="12" font-weight="700" fill="#94a3b8">📁 Other Folder</text>
+    <text x="75" y="332" text-anchor="middle" font-size="10" fill="#64748b">unrecognized ext...</text>
+  </g>
+
+  <!-- Arrow: Live Mode -> Output -->
+  <line x1="1210" y1="434" x2="1240" y2="434" stroke="#4ade80" stroke-width="2" marker-end="url(#arrG)"/>
+
+  <!-- ===================== SECTION 6: OUTPUT ARTIFACTS ===================== -->
+  <g transform="translate(640,620)">
+    <rect width="740" height="130" rx="14" fill="#1e293b" stroke="#334155" filter="url(#sh)"/>
+    <text x="370" y="28" text-anchor="middle" font-size="14" font-weight="700" fill="#94a3b8" letter-spacing="1.2">OUTPUT ARTIFACTS</text>
+    <line x1="16" y1="40" x2="724" y2="40" stroke="#334155"/>
+
+    <rect x="16" y="52" width="168" height="62" rx="10" fill="#1c1a10" stroke="#facc15"/>
+    <text x="100" y="76" text-anchor="middle" font-size="13" font-weight="700" fill="#facc15">📄 PDF Report</text>
+    <text x="100" y="96" text-anchor="middle" font-size="10" fill="#fde047">organization_report.pdf</text>
+
+    <rect x="200" y="52" width="168" height="62" rx="10" fill="#0f2318" stroke="#4ade80"/>
+    <text x="284" y="76" text-anchor="middle" font-size="13" font-weight="700" fill="#4ade80">📋 Audit Log</text>
+    <text x="284" y="96" text-anchor="middle" font-size="10" fill="#86efac">organizer.log</text>
+
+    <rect x="384" y="52" width="168" height="62" rx="10" fill="#1a1830" stroke="#a78bfa"/>
+    <text x="468" y="76" text-anchor="middle" font-size="13" font-weight="700" fill="#a78bfa">↺ Undo Log</text>
+    <text x="468" y="96" text-anchor="middle" font-size="10" fill="#c4b5fd">.organize_undo.json</text>
+
+    <rect x="568" y="52" width="156" height="62" rx="10" fill="#172033" stroke="#60a5fa"/>
+    <text x="646" y="76" text-anchor="middle" font-size="13" font-weight="700" fill="#60a5fa">📂 Category Dirs</text>
+    <text x="646" y="96" text-anchor="middle" font-size="10" fill="#7cb3f5">Images/, Docs/...</text>
+  </g>
+
+  <!-- Arrow: Mode -> Artifacts -->
+  <line x1="1125" y1="474" x2="1125" y2="620" stroke="#64748b" stroke-width="2" marker-end="url(#arr)"/>
+
+  <!-- ===================== SECTION 7: REVERT FLOW ===================== -->
+  <g transform="translate(40,620)">
+    <rect width="580" height="130" rx="14" fill="#1f1728" stroke="#f472b6" filter="url(#sh)"/>
+    <text x="290" y="28" text-anchor="middle" font-size="14" font-weight="700" fill="#f472b6" letter-spacing="1.2">OPTIONAL — REVERT / UNDO</text>
+    <line x1="16" y1="40" x2="564" y2="40" stroke="#f472b6"/>
+
+    <rect x="16" y="52" width="120" height="62" rx="10" fill="#1e293b" stroke="#334155"/>
+    <text x="76" y="76" text-anchor="middle" font-size="12" font-weight="700" fill="#f472b6">REVERT</text>
+    <text x="76" y="96" text-anchor="middle" font-size="10" fill="#94a3b8">--revert &lt;dir&gt;</text>
+
+    <line x1="136" y1="83" x2="156" y2="83" stroke="#64748b" stroke-width="1.5" marker-end="url(#arr)"/>
+
+    <rect x="156" y="52" width="120" height="62" rx="10" fill="#1e293b" stroke="#334155"/>
+    <text x="216" y="76" text-anchor="middle" font-size="12" font-weight="700" fill="#f472b6">READ LOG</text>
+    <text x="216" y="96" text-anchor="middle" font-size="10" fill="#94a3b8">load undo mapping</text>
+
+    <line x1="276" y1="83" x2="296" y2="83" stroke="#64748b" stroke-width="1.5" marker-end="url(#arr)"/>
+
+    <rect x="296" y="52" width="120" height="62" rx="10" fill="#1e293b" stroke="#334155"/>
+    <text x="356" y="76" text-anchor="middle" font-size="12" font-weight="700" fill="#f472b6">RESTORE</text>
+    <text x="356" y="96" text-anchor="middle" font-size="10" fill="#94a3b8">move files back</text>
+
+    <line x1="416" y1="83" x2="436" y2="83" stroke="#64748b" stroke-width="1.5" marker-end="url(#arr)"/>
+
+    <rect x="436" y="52" width="128" height="62" rx="10" fill="#1e293b" stroke="#334155"/>
+    <text x="500" y="76" text-anchor="middle" font-size="12" font-weight="700" fill="#f472b6">CLEANUP</text>
+    <text x="500" y="96" text-anchor="middle" font-size="10" fill="#94a3b8">del PDFs + empty dirs</text>
+  </g>
+</svg>
