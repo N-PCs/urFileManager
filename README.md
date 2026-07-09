@@ -1,163 +1,71 @@
 # urFileManager (urFM)
 
-A cross-platform utility that organizes cluttered folders into categorized subdirectories — Images, Documents, Audio, Video, Archives — in seconds. Comes with a polished GUI, CLI mode, dry-run preview, PDF reports, and customizable console themes.
+A cross-platform utility that organizes cluttered folders into categorized subdirectories — Images, Documents, Audio, Video, Archives — in seconds. Comes with a native Win32 GUI (Windows) and Java Swing GUI (Linux), plus CLI mode, dry-run preview, PDF reports, and customizable themes.
 
 **Platforms:** Windows (Native C++ Win32 GUI) · Linux (Java Swing GUI with Fedora RPM & Ubuntu DEB support)
 
-## Features
+## Download
 
-- **Smart Extension Sorting** — Moves loose files into category folders based on customizable rules in `config.json`
-- **Dry-Run Preview** — Preview every move before committing (enabled by default for safety)
-- **PDF Reports** — Generate detailed organization reports with file names, sizes, and status
-- **Full Audit Logging** — Every action recorded in `organizer.log` with timestamps
-- **Conflict Resolution** — Duplicates renamed automatically (e.g. `report (1).pdf`)
-- **Six UI Themes** — Midnight Dark, Minimalist Light, Red Sakura, Forest Emerald, Neon Cyberpunk, Obsidian Volt
-- **Editable Config** — Add file types or categories via `config.json` — no recompile needed
-- **GUI + CLI Modes** — Double-click for the GUI, or pass a folder path for scripting
-- **Undo / Revert** — Revert the last organization (cleans up category folders and PDF reports)
+### Via Command Line
 
-## Project Structure
+Download the release zip / tarball from any terminal:
 
-```
-├── frontend-web/              # React + Vite marketing site
-│   ├── src/
-│   └── public/
-├── desktop-windows/          # Windows C++ desktop apps
-│   ├── gui_app.cpp            # Windows native Win32 GUI (C++, builds ufmgr.exe)
-│   ├── cli.cpp                # Windows CLI (C++, builds ufmgr-cli.exe)
-│   ├── urfm_common.cpp/.h     # Shared engine (config, PDF report, revert)
-│   ├── build.bat              # Windows build script (MinGW-w64)
-│   ├── ufmgr.bat              # Windows CLI wrapper (forwards to ufmgr-cli.exe)
-│   ├── run.bat                # Windows GUI launcher
-│   ├── ufmgr.rc               # Windows resource file
-│   ├── ufmgr.ico              # Application icon
-│   └── windows_usage.md       # Windows usage guide
-├── desktop-linux/            # Linux Java Swing GUI (terminal aesthetic)
-│   ├── src/urfm/              # Java sources (Main, Cli, OrganizerEngine, UrfmGUI, ...)
-│   ├── build.sh               # Java build script
-│   ├── build-tarball.sh       # Portable tarball builder
-│   ├── build-rpm.sh           # Fedora RPM builder
-│   ├── build-deb.sh           # Ubuntu DEB builder
-│   ├── launcher.sh            # Launcher helper
-│   ├── urfm / urfm.jar        # Compiled launcher + application
-│   ├── MANIFEST.MF            # JAR manifest
-│   └── linux_usage.md         # Linux usage guide
-├── organizer.py               # Python CLI (cross-platform)
-├── config.json                # Sorting rules configuration
-├── scripts/                   # Release automation
-└── release/                   # Release binaries
-```
+| Platform | Command |
+|----------|---------|
+| Windows (PowerShell) | `Invoke-WebRequest -Uri "https://urfilemanager.vercel.app/urfm-windows.zip" -OutFile "urfm-windows.zip"` |
+| Windows (CMD) | `curl -L -o urfm-windows.zip "https://urfilemanager.vercel.app/urfm-windows.zip"` |
+| Linux (tarball) | `curl -LO "https://urfilemanager.vercel.app/urfm-linux.tar.gz"` |
 
-## Workflow Diagram
-![workflow-diagram](workflow.png)
+### Package Manager Install (Linux)
 
-## Quick Start
-
-### Windows
-
-1. Download `urfm-windows.zip` from the [website](https://urfilemanager.vercel.app) or via CLI:
-
-```powershell
-# PowerShell
-Invoke-WebRequest -Uri "https://urfilemanager.vercel.app/urfm-windows.zip" -OutFile "urfm-windows.zip"
-```
-
-```cmd
-curl -L -o urfm-windows.zip "https://urfilemanager.vercel.app/urfm-windows.zip"
-```
-
-2. Extract anywhere
-3. Double-click `run.bat` to launch the GUI, or use:
-
-```powershell
-# GUI launcher
-.\ufmgr.exe
-
-# CLI — preview (dry-run is the default)
-.\ufmgr-cli.exe C:\Downloads
-
-# CLI — actually move files
-.\ufmgr-cli.exe C:\Downloads --no-dry-run
-
-# CLI — undo a previous organization
-.\ufmgr-cli.exe --revert C:\Downloads
-```
-
-### Linux (Fedora RPM — recommended)
-
-1. Download the `urfm-1.0.0-1.noarch.rpm` package.
-2. Install the package:
-
+**Fedora / RHEL:**
 ```bash
 sudo dnf install ./urfm-1.0.0-1.noarch.rpm
 ```
 
-3. Run it from the application menu, or via terminal:
+**Ubuntu / Debian:**
+```bash
+sudo apt install ./urfm_1.0.0_all.deb
+```
+
+## Usage
+
+### Windows
+
+Extract the ZIP, then:
+
+```powershell
+.\ufmgr.exe                          # Launch GUI
+.\ufmgr-cli.exe C:\Downloads         # Preview (dry-run is the default)
+.\ufmgr-cli.exe C:\Downloads --no-dry-run  # Actually move files
+.\ufmgr-cli.exe --revert C:\Downloads      # Undo last organization
+```
+
+### Linux
+
+**Tarball:** `tar -xzf urfm-linux.tar.gz && chmod +x urfm && ./urfm`
+
+**RPM/DEB:** Run `urfm` from terminal or launch from app menu.
 
 ```bash
-urfm                           # Launch GUI
-urfm ~/Downloads --dry-run    # Preview organization
-urfm ~/Downloads               # Run organization
-urfm ~/Downloads --revert      # Undo last run
+urfm ~/Downloads --dry-run    # Preview
+urfm ~/Downloads               # Organize
+urfm ~/Downloads --revert      # Undo
 urfm --version                 # Show version
-urfm --gui                     # Force open GUI (even with a directory arg)
-```
-
-### Linux (Ubuntu DEB)
-
-1. Download the `urfm_1.0.0_all.deb` package.
-2. Install the package:
-
-```bash
-sudo dpkg -i ./urfm_1.0.0_all.deb
-sudo apt install -f            # Fix any missing dependencies
-```
-
-3. Run it from the application menu, or via terminal:
-
-```bash
-urfm                           # Launch GUI
-urfm ~/Downloads --dry-run    # Preview organization
-urfm ~/Downloads               # Run organization
-urfm ~/Downloads --revert      # Undo last run
-urfm --version                 # Show version
-urfm --gui                     # Force open GUI (even with a directory arg)
-```
-
-### Linux (Java Tarball)
-
-1. Download `urfm-linux.tar.gz` and extract it.
-2. Install Java 17+ runtime if not already present:
-
-```bash
-sudo apt install openjdk-17-jre   # Ubuntu
-sudo dnf install java-17-openjdk  # Fedora
-```
-
-3. Run the application:
-
-```bash
-chmod +x urfm
-./urfm                           # Launch GUI
-./urfm ~/Downloads --dry-run    # Preview organization
-./urfm ~/Downloads               # Run organization
-./urfm ~/Downloads --revert      # Undo last run
-./urfm --version                 # Show version
-./urfm --gui                     # Force open GUI (even with a directory arg)
 ```
 
 ## Building from Source
 
-### Windows (native Win32 GUI)
-
-Requires MinGW-w64 with `windres`.
+### Windows (MinGW-w64)
 
 ```cmd
 cd desktop-windows
 build.bat
 ```
 
-### Linux — Java Terminal Edition
+Requires MinGW-w64 with `windres`.
+
+### Linux — Java Swing
 
 ```bash
 cd desktop-linux
@@ -170,31 +78,25 @@ chmod +x build.sh
 
 ```bash
 cd desktop-linux
-./build-rpm.sh      # Fedora/RHEL (.rpm) — needs rpmbuild
+./build-rpm.sh      # Fedora/RHEL (.rpm)
 ./build-deb.sh      # Ubuntu/Debian (.deb)
 ```
 
-### Python (cross-platform CLI)
+## Configuration
 
-Works on all platforms without compilation.
+Sorting rules are defined in `config.json` (placed next to the executable). Map category names to lowercase extension lists:
 
-```bash
-pip install tqdm
-python organizer.py ~/Downloads
+```json
+{
+  "Images": [".jpg", ".jpeg", ".png", ".gif", ".webp", ".svg"],
+  "Documents": [".pdf", ".docx", ".doc", ".txt", ".xlsx", ".pptx"],
+  "Audio": [".mp3", ".wav", ".aac", ".flac", ".m4a"],
+  "Video": [".mp4", ".mkv", ".mov", ".avi", ".webm"],
+  "Archives": [".zip", ".tar.gz", ".rar", ".7z", ".tar"]
+}
 ```
 
-## Releasing (website downloads)
-
-Release archives must live in `frontend-web/public/` so Vite copies them into the deployed site.
-
-```bash
-# From project root — builds Java Swing files, packaging Linux tarball and RPM (if rpmbuild exists)
-./scripts/package-release.sh
-```
-
-Then commit `frontend-web/public/urfm-*.zip`, `urfm-*.tar.gz`, and `downloads.json`, and push to redeploy.
-
-Made with ❤️ by @N-PCs 
+Files with unrecognized extensions land in an `Other/` folder. After editing `config.json`, restart the app or re-run the CLI.
 
 ## License
 

@@ -1,13 +1,6 @@
-# Python
+# Python (legacy - kept for existing venv)
 __pycache__/
-*.py[cod]
-*.pyo
-*.egg-info/
-dist/
-build/
-*.egg
 venv/
-.env
 
 # Compiled binaries
 *.exe
@@ -20,6 +13,7 @@ venv/
 
 # Logs
 *.log
+organizer.log
 
 # OS files
 .DS_Store
@@ -40,7 +34,6 @@ ufmgr.o
 ufmgr.res
 /urfm
 urfm.exe
-organizer.log
 release/
 
 # Node / Website
