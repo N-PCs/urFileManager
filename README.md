@@ -13,6 +13,28 @@ A cross-platform bulk file organizer that sorts cluttered folders into neat cate
 
 ---
 
+## Table of Contents
+
+- [Features](#-features)
+- [Project Structure](#-project-structure)
+- [Download](#-download)
+  - [Via Command Line](#via-command-line)
+  - [Package Manager Install (Linux)](#package-manager-install-linux)
+- [Usage](#-usage)
+  - [Windows](#windows)
+  - [Linux](#linux)
+- [Building from Source](#-building-from-source)
+  - [Windows (MinGW-w64)](#windows-mingw-w64)
+  - [Linux — Java Swing](#linux--java-swing)
+  - [Linux — RPM / DEB packaging](#linux--rpm--deb-packaging)
+  - [Website (frontend-web)](#website-frontend-web)
+- [Configuration](#️-configuration)
+- [How It Works](#-how-it-works)
+- [Troubleshooting](#-troubleshooting)
+- [License](#-license)
+
+---
+
 ## Features
 
 - **Smart Extension Sorting** — Moves loose files into category folders based on customizable rules in `config.json`.
@@ -150,7 +172,7 @@ A live run saves an undo log (`.organize_undo.json`); `--revert` reads it and re
 
 ---
 
-## 🛠️ Building from Source
+## Building from Source
 
 ### Windows (MinGW-w64)
 
@@ -193,7 +215,7 @@ npm run build       # production build -> dist/
 
 ---
 
-## ⚙️ Configuration
+## Configuration
 
 Sorting rules live in `config.json`. The app looks it up in this order:
 
