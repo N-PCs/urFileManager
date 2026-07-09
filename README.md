@@ -53,7 +53,7 @@ A cross-platform bulk file organizer that sorts cluttered folders into neat cate
 ## Project Structure
 
 ```
-bulk-file-organiser/
+urFileManager/
 ├── desktop-windows/            # Windows C++ desktop apps (MinGW-w64)
 │   ├── gui_app.cpp             # Windows native Win32 GUI (C++) -> ufmgr.exe
 │   ├── cli.cpp                 # Windows CLI (C++) -> ufmgr-cli.exe
