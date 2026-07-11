@@ -271,3 +271,5 @@ Map each category name to a list of **lowercase** extensions:
 ## License
 
 MIT
+
+Made by @N-PCs for the world 🌍 ❤️
